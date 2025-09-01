@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Supervision Serveur</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      canvas {
+        margin: 20px;
+        width: 600px;
+        height: 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Supervision Serveur</h2>
+    <canvas id="tempChart"></canvas>
+    <canvas id="cpuChart"></canvas>
+    <canvas id="memoryChart"></canvas>
+    <canvas id="networkChart"></canvas>
+
+    <script>
+      // Configuration générique pour les graphiques
+      function createChart(ctx, label, yLabel) {
+        return new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: label,
+                data: [],
+                borderColor: "#e63946",
+                backgroundColor: "rgba(230, 57, 70, 0.2)",
+                fill: true,
+                tension: 0.4,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: { beginAtZero: false, title: { display: true, text: yLabel } },
+              x: { title: { display: true, text: "Temps (s)" } },
+            },
+          },
+        });
+      }
+
+      // Initialisation des graphiques
+      const tempChart = createChart(
+        document.getElementById("tempChart").getContext("2d"),
+        "Température CPU (°C)",
+        "Température (°C)"
+      );
+      const cpuChart = createChart(
+        document.getElementById("cpuChart").getContext("2d"),
+        "Utilisation CPU (%)",
+        "Pourcentage (%)"
+      );
+      const memoryChart = createChart(
+        document.getElementById("memoryChart").getContext("2d"),
+        "Utilisation Mémoire (%)",
+        "Pourcentage (%)"
+      );
+      const networkChart = new Chart(
+        document.getElementById("networkChart").getContext("2d"),
+        {
+          type: "line",
+          data: {
+            labels: [],
+            datasets: [
+              {
+                label: "Envoyé (Mo)",
+                data: [],
+                borderColor: "#457b9d",
+                fill: false,
+              },
+              {
+                label: "Reçu (Mo)",
+                data: [],
+                borderColor: "#2a9d8f",
+                fill: false,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: { display: true, text: "Débit (Mo)" },
+              },
+              x: { title: { display: true, text: "Temps (s)" } },
+            },
+          },
+        }
+      );
+
+      function updateCharts() {
+        fetch("/api/metrics")
+          .then((response) => response.json())
+          .then((data) => {
+            const labels = Array.from(
+              { length: data.cpu_temperatures.length },
+              (_, i) => i * 5
+            );
+            tempChart.data.labels = labels;
+            tempChart.data.datasets[0].data = data.cpu_temperatures;
+            tempChart.update();
+
+            cpuChart.data.labels = labels;
+            cpuChart.data.datasets[0].data = data.cpu_usage;
+            cpuChart.update();
+
+            memoryChart.data.labels = labels;
+            memoryChart.data.datasets[0].data = data.memory_usage;
+            memoryChart.update();
+
+            networkChart.data.labels = labels;
+            networkChart.data.datasets[0].data = data.network_io.sent;
+            networkChart.data.datasets[1].data = data.network_io.received;
+            networkChart.update();
+          });
+        setTimeout(updateCharts, 5000);
+      }
+      updateCharts();
+    </script>
+  </body>
+</html>
