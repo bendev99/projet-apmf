@@ -1,42 +1,52 @@
+import os
 from flask import Flask, jsonify
 from flask_cors import CORS
-import requests
-import time
-from threading import Thread
+from pymongo import MongoClient
+import logging
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
-SERVER_API_URL = 'http://localhost:5001/api/metrics'
+# Configurer les logs pour débogage
+# logging.basicConfig(level=logging.DEBUG)
 
-metrics = {
-    'cpu_temperature': [],
-    'cpu_usage': [],
-    'memory_usage': [],
-    'disk_usage': [],
-}
+# Vérifier MONGODB_URI
+MONGODB_URI = os.getenv("MONGODB_URI")
+print("Connecter à MongoDB avec URI:", MONGODB_URI)
+if not MONGODB_URI:
+    raise ValueError("Erreur : MONGODB_URI n'est pas défini dans les variables d'environnement.")
 
-def fetch_server_data():
-    while True:
-        try:
-            response = requests.get(SERVER_API_URL)
-            if response.status_code == 200:
-                data = response.json()
-                metrics['cpu_temperature'] = data['cpu_temperature']
-                metrics['cpu_usage'] = data['cpu_usage']
-                metrics['memory_usage'] = data['memory_usage']
-                metrics['disk_usage'] = data['disk_usage']
-            else:
-                print(f"Erreur lors de la récupération des données : {response.status_code}")
-        except Exception as e:
-            print(f"Erreur: {e}")
-        time.sleep(5)
-
-Thread(target=fetch_server_data).start()
+# Connexion à MongoDB
+client = MongoClient(MONGODB_URI)
+db = client['apmf-db']
+collection = db['metrics']
 
 @app.route('/api/metrics', methods=['GET'])
 def get_metrics():
-    return jsonify(metrics)
+    try:
+        # Récupérer les 50 dernières entrées, triées par timestamp décroissant
+        recent_metrics = list(collection.find().sort('timestamp', -1).limit(50))
+        # Re-trier par timestamp croissant pour le frontend
+        recent_metrics = sorted(recent_metrics, key=lambda x: x['timestamp'])
+        # Log des timestamps pour débogage
+        app.logger.debug(f"Timestamps récupérés : {[m['timestamp'] for m in recent_metrics]}")
+        # Formater pour compatibilité avec le frontend
+        formatted_metrics = {
+            'cpu_temperature': [m['cpu_temperature'] for m in recent_metrics if m['cpu_temperature'] is not None],
+            'cpu_usage': [m['cpu_usage'] for m in recent_metrics],
+            'memory_usage': [m['memory_usage'] for m in recent_metrics],
+            'disk_usage': [m['disk_usage'] for m in recent_metrics],
+            'timestamps': [m['timestamp'] for m in recent_metrics]
+        }
+        app.logger.debug(f"Réponse envoyée : {formatted_metrics}")
+        return jsonify(formatted_metrics)
+    except Exception as e:
+        app.logger.error(f"Erreur lors de la récupération des métriques : {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def index():
