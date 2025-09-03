@@ -78,6 +78,25 @@ def get_metrics():
     except Exception as e:
         print(f"Erreur lors de la récupération des métriques : {e}")
         return jsonify({"error": str(e)}), 500
+    
+# Route pour recuperer tout les donner du base de donner
+@app.route('/api/all_data', methods=['GET'])
+def get_all_data():
+    try:
+        # Fonction pour recuperer tout les donner dans la base de donner
+        all_data = list(collection.find())
+
+        # Configuration pour le frontend
+        formatted_data = {
+            'cpu_temperature': [m['cpu_temperature'] for m in all_data if m['cpu_temperature'] is not None],
+            'cpu_usage': [m['cpu_usage'] for m in all_data],
+            'memory_usage': [m['memory_usage'] for m in all_data],
+            'disk_usage': [m['disk_usage'] for m in all_data],
+            'timestamps': [m['timestamp'] for m in all_data]
+        }
+        return jsonify(formatted_data)
+    except Exception as e:
+        return jsonify({"Erreur ": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)
