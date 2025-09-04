@@ -17,7 +17,7 @@ CORS(app)
 
 # Vérifier MONGODB_URI
 MONGODB_URI = os.getenv("MONGODB_URI")
-print("Connecter à MongoDB avec URI:", MONGODB_URI)
+
 if not MONGODB_URI:
     raise ValueError("Erreur : MONGODB_URI n'est pas défini dans les variables d'environnement.")
 
@@ -30,8 +30,9 @@ def collect_data():
     while True:
         try:
             # Définir le fuseau horaire UTC+3 (Madagascar)
-            madagascar_tz = pytz.timezone('Indian/Antananarivo')
-            current_time = datetime.now(madagascar_tz)
+            mada_tz = pytz.timezone('Indian/Antananarivo')
+            current_time = datetime.now(mada_tz)
+            
             # Collecte des métriques
             metrics = {
                 'timestamp': current_time.isoformat(),  # Stocker comme chaîne ISO
@@ -46,8 +47,6 @@ def collect_data():
             if 'coretemp' in temps:
                 metrics['cpu_temperature'] = temps['coretemp'][0].current
 
-            # Log pour débogage
-            print(f"Insertion timestamp : {current_time.isoformat()} (UTC+3, Indian/Antananarivo)")
             # Insérer dans MongoDB
             collection.insert_one(metrics)
 
@@ -62,10 +61,10 @@ def get_metrics():
     try:
         # Récupérer les 50 dernières entrées
         recent_metrics = list(collection.find().sort('timestamp', -1).limit(50))
+        
         # Re-trier par timestamp croissant pour le frontend
         recent_metrics = sorted(recent_metrics, key=lambda x: x['timestamp'])
-        # Log pour débogage
-        print(f"Timestamps récupérés : {[m['timestamp'] for m in recent_metrics]}")
+
         # Formater pour compatibilité avec le frontend
         formatted_metrics = {
             'cpu_temperature': [m['cpu_temperature'] for m in recent_metrics if m['cpu_temperature'] is not None],
@@ -76,7 +75,6 @@ def get_metrics():
         }
         return jsonify(formatted_metrics)
     except Exception as e:
-        print(f"Erreur lors de la récupération des métriques : {e}")
         return jsonify({"error": str(e)}), 500
     
 # Route pour recuperer tout les donner du base de donner

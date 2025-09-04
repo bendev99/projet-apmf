@@ -11,12 +11,9 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
-# Configurer les logs pour débogage
-# logging.basicConfig(level=logging.DEBUG)
-
 # Vérifier MONGODB_URI
 MONGODB_URI = os.getenv("MONGODB_URI")
-print("Connecter à MongoDB avec URI:", MONGODB_URI)
+
 if not MONGODB_URI:
     raise ValueError("Erreur : MONGODB_URI n'est pas défini dans les variables d'environnement.")
 
@@ -34,8 +31,6 @@ def get_metrics():
         # Re-trier par timestamp croissant pour le frontend
         recent_metrics = sorted(recent_metrics, key=lambda x: x['timestamp'])
 
-        # Log des timestamps pour débogage
-        app.logger.debug(f"Timestamps récupérés : {[m['timestamp'] for m in recent_metrics]}")
         # Formater pour compatibilité avec le frontend
         formatted_metrics = {
             'cpu_temperature': [m['cpu_temperature'] for m in recent_metrics if m['cpu_temperature'] is not None],
@@ -44,10 +39,8 @@ def get_metrics():
             'disk_usage': [m['disk_usage'] for m in recent_metrics],
             'timestamps': [m['timestamp'] for m in recent_metrics]
         }
-        app.logger.debug(f"Réponse envoyée : {formatted_metrics}")
         return jsonify(formatted_metrics)
     except Exception as e:
-        app.logger.error(f"Erreur lors de la récupération des métriques : {e}")
         return jsonify({"error": str(e)}), 500
     
 # Route pour recuperer tout les donner du base de donner

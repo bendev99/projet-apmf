@@ -1,30 +1,13 @@
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import { Line, Pie } from "react-chartjs-2";
+import toast, { Toaster } from "react-hot-toast";
 import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  Filler,
-  ArcElement,
-} from "chart.js";
-
-ChartJS.register(
-  LineElement,
-  PointElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  CategoryScale,
-  Filler,
-  ArcElement
-);
+  lineChartData,
+  lineChartOptions,
+  pieChartData,
+  pieChartOptions,
+} from "./utils";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function App() {
   const [metrics, setMetrics] = useState({
@@ -35,6 +18,7 @@ function App() {
     timestamps: [],
   });
   const [labels, setLabels] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Récupérer les données
   useEffect(() => {
@@ -59,85 +43,9 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Configurations des graphiques en ligne
-  const createLineChartData = (data, label, color) => ({
-    labels: labels,
-    datasets: [
-      {
-        label: label,
-        data: data,
-        borderColor: color,
-        backgroundColor: color.replace("1)", "0.4)"), // Remplissage plus opaque
-        fill: true,
-        tension: 0.3, // Courbature ajustée
-        borderWidth: 3, // Taille de la courbe plus épaisse
-        pointRadius: 5, // Points plus visibles
-        pointHoverRadius: 8, // Points plus grands au survol
-        pointStyle: "circle",
-        pointBackgroundColor: color,
-        pointBorderColor: "#fff",
-        pointBorderWidth: 2,
-      },
-    ],
-  });
-
-  const lineChartOptions = (yTitle) => ({
-    scales: {
-      y: { beginAtZero: false, title: { display: true, text: yTitle } },
-      x: { title: { display: true, text: "Heure (UTC+3)" } },
-    },
-    plugins: { legend: { display: true } },
-    animation: {
-      duration: 1000,
-      easing: "easeOutQuart",
-    },
-    maintainAspectRatio: false, // Permet de personnaliser la hauteur sans ratio fixe
-  });
-
-  // Configuration pour le Pie chart (utilisation du disque)
-  const pieChartData = {
-    labels: ["Utilisation Disque", "Espace Libre"],
-    datasets: [
-      {
-        label: "Utilisation du disque",
-        data: [
-          metrics.disk_usage[49] ?? 0,
-          100 - (metrics.disk_usage[49] ?? 0),
-        ],
-        backgroundColor: ["rgba(108, 92, 231, 1)", "rgba(108, 92, 231, 0.2)"],
-        borderColor: ["#fff", "#fff"],
-        borderWidth: 2, // Épaisseur des bordures des tranches
-        hoverOffset: 4, // Offset au survol pour agrandir les tranches
-      },
-    ],
-  };
-
-  const pieChartOptions = {
-    plugins: {
-      legend: {
-        position: "top", // Légende à droite
-        labels: {
-          color: "#333",
-          font: { size: 14 },
-        },
-      },
-      tooltip: {
-        enabled: true,
-        callbacks: {
-          label: (tooltipItem) => `${tooltipItem.label}: ${tooltipItem.raw}%`, // Afficher les pourcentages dans le tooltip
-        },
-      },
-    },
-    animation: {
-      duration: 1000,
-      easing: "easeOutQuart",
-    },
-    maintainAspectRatio: false, // Désactiver le ratio d'aspect pour éviter l'étirement
-    responsive: true, // Rend le graphique responsive
-  };
-
   // Fonction pour télécharger l'historique
   const getHistorique = async () => {
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:5000/api/all_data");
       const data = await res.json();
@@ -190,21 +98,31 @@ function App() {
     } catch (error) {
       console.error("Erreur lors du téléchargement de l'historique :", error);
       toast.error("Erreur lors du téléchargement de l'historique");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const value = loading ? 50 : 0;
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
-      <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-left" />
       <div className="flex justify-between items-center bg-white shadow p-3 rounded-md mb-6 w-full max-w-7xl">
         <h1 className="text-3xl font-bold text-gray-800 text-start">
           Tableau de bord
         </h1>
         <button
           onClick={getHistorique}
-          className="bg-green-500 p-2 rounded-2xl hover:bg-green-600 cursor-pointer"
+          className="bg-green-500 p-2 px-5 rounded-2xl hover:bg-green-600 cursor-pointer"
         >
-          Télécharger l'historique
+          {loading ? (
+            <div className="flex items-center gap-2">
+              Téléchargement... <CircularProgress size={15} color="inherit" />
+            </div>
+          ) : (
+            "Télécharger l'historique"
+          )}
         </button>
       </div>
       <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -216,7 +134,8 @@ function App() {
             Température CPU : {metrics.cpu_temperature[49] ?? "N/A"}°C
           </h2>
           <Line
-            data={createLineChartData(
+            data={lineChartData(
+              labels,
               metrics.cpu_temperature,
               "Température CPU (°C)",
               "rgba(230, 57, 70, 1)"
@@ -233,7 +152,8 @@ function App() {
             Utilisation CPU : {metrics.cpu_usage[49] ?? "N/A"}%
           </h2>
           <Line
-            data={createLineChartData(
+            data={lineChartData(
+              labels,
               metrics.cpu_usage,
               "Utilisation CPU (%)",
               "rgba(46, 134, 222, 1)"
@@ -250,7 +170,8 @@ function App() {
             Utilisation de la mémoire : {metrics.memory_usage[49] ?? "N/A"}%
           </h2>
           <Line
-            data={createLineChartData(
+            data={lineChartData(
+              labels,
               metrics.memory_usage,
               "Utilisation Mémoire (%)",
               "rgba(61, 193, 211, 1)"
@@ -268,9 +189,12 @@ function App() {
           </h2>
           <div
             className="flex justify-center items-center"
-            style={{ height: "300px", width: "100%" }}
+            style={{ height: "400px", width: "100%" }}
           >
-            <Pie data={pieChartData} options={pieChartOptions} />
+            <Pie
+              data={pieChartData({ disk_usage: metrics.disk_usage[49] })}
+              options={pieChartOptions}
+            />
           </div>
         </div>
       </div>
