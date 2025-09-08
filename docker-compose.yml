@@ -1,0 +1,30 @@
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - collector
+
+  collector:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.server
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - SERVER_ID=server1
+    env_file:
+      - ./backend/.env
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api

@@ -5,8 +5,6 @@ import { Toaster } from "react-hot-toast";
 import SecureRoutes from "./components/SecureRoutes";
 
 function App() {
-  const user = window.localStorage.getItem("user");
-
   return (
     <div>
       <Toaster />
