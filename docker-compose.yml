@@ -8,7 +8,7 @@ services:
     environment:
       - MONGODB_URI=${MONGODB_URI}
     env_file:
-      - ./backend/.env
+      - .env
     depends_on:
       - collector
 
@@ -20,7 +20,7 @@ services:
       - MONGODB_URI=${MONGODB_URI}
       - SERVER_ID=server1
     env_file:
-      - ./backend/.env
+      - .env
 
   frontend:
     build: ./frontend

@@ -10,6 +10,7 @@ import {
 } from "./utils";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
+import Tableau from "./Tableau";
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -24,9 +25,9 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
 
-  // Récupérer les données
+  // Récupérer les données pour les graphiques
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchMetrics = async () => {
       try {
         const response = await fetch("http://localhost:5000/api/metrics");
         const data = await response.json();
@@ -42,8 +43,8 @@ const Dashboard = () => {
       }
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 5000);
+    fetchMetrics();
+    const interval = setInterval(fetchMetrics, 5000);
     return () => clearInterval(interval);
   }, []);
 
@@ -209,10 +210,13 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="sticky bottom-0 left-16 z-30 w-full flex justify-end p-5">
+      {/* Tableau des derniers relevés avec pagination */}
+      <Tableau />
+
+      <div className="fixed bottom-5 right-0 mr-10 z-30 flex justify-end rounded-full">
         <button
           onClick={deconnexion}
-          className="bg-blue-950 rounded-full m-4 mt-6 shadow-lg hover:scale-110 transition-transform duration-300 w-8 h-8 items-center justify-center flex text-white text-2xl cursor-pointer"
+          className="bg-blue-950 rounded-full shadow-lg hover:scale-110 transition-transform duration-300 w-8 h-8 items-center justify-center flex text-white text-2xl cursor-pointer"
         >
           <RiLogoutCircleLine />
         </button>

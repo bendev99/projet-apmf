@@ -1,8 +1,7 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pymongo import MongoClient
-import logging
 from dotenv import load_dotenv
 
 # Charger les variables d'environnement
@@ -42,12 +41,42 @@ def get_metrics():
         return jsonify(formatted_metrics)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Nouvelle route pour la pagination (10 par page, tri descendant)
+@app.route('/api/paginated_metrics', methods=['GET'])
+def get_paginated_metrics():
+    try:
+        page = int(request.args.get("page", 1))
+        limit = int(request.args.get("limit", 7))
+        skip = (page - 1) * limit
+
+        total = collection.count_documents({})
+        metrics = list(collection.find().sort('timestamp', -1).skip(skip).limit(limit))
+
+        formatted_metrics = [
+            {
+                'timestamp': m['timestamp'],
+                'cpu_temperature': m['cpu_temperature'],
+                'cpu_usage': m['cpu_usage'],
+                'memory_usage': m['memory_usage'],
+                'disk_usage': m['disk_usage']
+            } for m in metrics
+        ]
+
+        return jsonify({
+            'metrics': formatted_metrics,
+            'total': total,
+            'page': page,
+            'limit': limit
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     
-# Route pour recuperer tout les donner du base de donner
+# Route pour récupérer toutes les données de la base de données
 @app.route('/api/all_data', methods=['GET'])
 def get_all_data():
     try:
-        # Fonction pour recuperer tout les donner dans la base de donner
+        # Récupérer toutes les données
         all_data = list(collection.find())
 
         # Configuration pour le frontend
