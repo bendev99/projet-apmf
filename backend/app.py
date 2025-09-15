@@ -24,8 +24,11 @@ collection = db['metrics']
 @app.route('/api/metrics', methods=['GET'])
 def get_metrics():
     try:
+        server_id = request.args.get("server_id")
+        filter_query = {"server_id": server_id} if server_id else {}
+
         # Récupérer les 50 dernières entrées, triées par timestamp décroissant
-        recent_metrics = list(collection.find().sort('timestamp', -1).limit(50))
+        recent_metrics = list(collection.find(filter_query).sort('timestamp', -1).limit(50))
 
         # Re-trier par timestamp croissant pour le frontend
         recent_metrics = sorted(recent_metrics, key=lambda x: x['timestamp'])
@@ -42,16 +45,19 @@ def get_metrics():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Nouvelle route pour la pagination (10 par page, tri descendant)
+# Route pour la pagination (7 par page, tri descendant)
 @app.route('/api/paginated_metrics', methods=['GET'])
 def get_paginated_metrics():
     try:
+        server_id = request.args.get("server_id")
+        filter_query = {"server_id": server_id} if server_id else {}
+
         page = int(request.args.get("page", 1))
         limit = int(request.args.get("limit", 7))
         skip = (page - 1) * limit
 
-        total = collection.count_documents({})
-        metrics = list(collection.find().sort('timestamp', -1).skip(skip).limit(limit))
+        total = collection.count_documents(filter_query)
+        metrics = list(collection.find(filter_query).sort('timestamp', -1).skip(skip).limit(limit))
 
         formatted_metrics = [
             {
@@ -72,12 +78,15 @@ def get_paginated_metrics():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     
-# Route pour récupérer toutes les données de la base de données
+# Route pour récupérer toutes les données (pour export CSV)
 @app.route('/api/all_data', methods=['GET'])
 def get_all_data():
     try:
+        server_id = request.args.get("server_id")
+        filter_query = {"server_id": server_id} if server_id else {}
+
         # Récupérer toutes les données
-        all_data = list(collection.find())
+        all_data = list(collection.find(filter_query).sort('timestamp', 1))  # Tri croissant pour CSV
 
         # Configuration pour le frontend
         formatted_data = {
@@ -90,6 +99,16 @@ def get_all_data():
         return jsonify(formatted_data)
     except Exception as e:
         return jsonify({"Erreur ": str(e)}), 500
+
+# Nouvelle route pour lister les serveurs uniques
+@app.route('/api/servers', methods=['GET'])
+def get_servers():
+    try:
+        servers = collection.distinct("server_id")
+        servers.sort()  # Tri alphabétique
+        return jsonify({"servers": servers})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/')
 def index():

@@ -18,6 +18,8 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 if not MONGODB_URI:
     raise ValueError("Erreur : MONGODB_URI n'est pas défini.")
 
+SERVER_ID = os.getenv("SERVER_ID", "server1")  # ID unique par serveur
+
 client = MongoClient(MONGODB_URI)
 db = client['apmf-db']
 collection = db['metrics']
@@ -33,6 +35,7 @@ def collect_data():
                 'cpu_usage': psutil.cpu_percent(interval=1),
                 'memory_usage': psutil.virtual_memory().percent,
                 'disk_usage': psutil.disk_usage('/').percent,
+                'server_id': SERVER_ID  # Ajout de l'ID
             }
             temps = psutil.sensors_temperatures()
             if 'coretemp' in temps:

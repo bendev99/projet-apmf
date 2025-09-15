@@ -11,6 +11,10 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import { useNavigate } from "react-router-dom";
 import Tableau from "./Tableau";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState({
@@ -22,14 +26,39 @@ const Dashboard = () => {
   });
   const [labels, setLabels] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [servers, setServers] = useState([]);
+  const [selectedServer, setSelectedServer] = useState("");
 
   const navigate = useNavigate();
 
-  // Récupérer les données pour les graphiques
+  // Récupérer la liste des serveurs
   useEffect(() => {
+    const fetchServers = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/servers");
+        const data = await response.json();
+        setServers(data.servers || []);
+        if (data.servers && data.servers.length > 0) {
+          setSelectedServer(data.servers[0]); // Sélectionne le premier par défaut
+        }
+      } catch (error) {
+        console.error("Erreur lors de la récupération des serveurs:", error);
+        toast.error("Erreur lors du chargement des serveurs");
+      }
+    };
+
+    fetchServers();
+  }, []);
+
+  // Récupérer les données pour les graphiques (avec server_id)
+  useEffect(() => {
+    if (!selectedServer) return;
+
     const fetchMetrics = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/metrics");
+        const response = await fetch(
+          `http://localhost:5000/api/metrics?server_id=${selectedServer}`
+        );
         const data = await response.json();
         setMetrics(data);
         const newLabels =
@@ -46,13 +75,19 @@ const Dashboard = () => {
     fetchMetrics();
     const interval = setInterval(fetchMetrics, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [selectedServer]);
 
-  // Fonction pour télécharger l'historique
+  // Fonction pour télécharger l'historique (avec server_id)
   const getHistorique = async () => {
+    if (!selectedServer) {
+      toast.error("Sélectionnez un serveur d'abord");
+      return;
+    }
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/all_data");
+      const res = await fetch(
+        `http://localhost:5000/api/all_data?server_id=${selectedServer}`
+      );
       const data = await res.json();
 
       console.log("Données reçues pour historique : ", data);
@@ -93,7 +128,7 @@ const Dashboard = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", "historique_metrics.csv");
+      link.setAttribute("download", `historique_metrics_${selectedServer}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -110,7 +145,7 @@ const Dashboard = () => {
 
   const deconnexion = () => {
     window.localStorage.removeItem("user");
-    toast.success("Deconnexion avec success !");
+    toast.success("Deconnexion réussi !");
 
     navigate("/login");
   };
@@ -121,97 +156,121 @@ const Dashboard = () => {
         <h1 className="text-3xl font-bold text-gray-800 text-start">
           Tableau de bord
         </h1>
-        <button
-          onClick={getHistorique}
-          className="bg-green-500 p-2 px-5 rounded-2xl hover:bg-green-600 cursor-pointer"
-        >
-          {loading ? (
-            <div className="flex items-center gap-2">
-              Téléchargement... <CircularProgress size={15} color="inherit" />
-            </div>
-          ) : (
-            "Télécharger l'historique"
-          )}
-        </button>
+        <div className="flex items-center gap-4">
+          <FormControl variant="outlined" sx={{ minWidth: 200 }}>
+            <InputLabel id="server-select-label">Serveur</InputLabel>
+            <Select
+              labelId="server-select-label"
+              value={selectedServer}
+              onChange={(e) => setSelectedServer(e.target.value)}
+              label="Serveur"
+            >
+              {servers.map((server) => (
+                <MenuItem key={server} value={server}>
+                  {server}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <button
+            onClick={getHistorique}
+            className="bg-green-500 p-2 px-5 rounded-2xl hover:bg-green-600 cursor-pointer"
+          >
+            {loading ? (
+              <div className="flex items-center gap-2">
+                Téléchargement... <CircularProgress size={15} color="inherit" />
+              </div>
+            ) : (
+              "Télécharger l'historique"
+            )}
+          </button>
+        </div>
       </div>
 
-      <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div
-          className="bg-white p-6 rounded-lg shadow-lg"
-          style={{ height: "400px" }}
-        >
-          <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
-            Température CPU : {metrics.cpu_temperature[49] ?? "N/A"}°C
-          </h2>
-          <Line
-            data={lineChartData(
-              labels,
-              metrics.cpu_temperature,
-              "Température CPU (°C)",
-              "rgba(230, 57, 70, 1)"
-            )}
-            options={lineChartOptions("Température (°C)")}
-            height={300}
-          />
-        </div>
-        <div
-          className="bg-white p-6 rounded-lg shadow-lg"
-          style={{ height: "400px" }}
-        >
-          <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
-            Utilisation CPU : {metrics.cpu_usage[49] ?? "N/A"}%
-          </h2>
-          <Line
-            data={lineChartData(
-              labels,
-              metrics.cpu_usage,
-              "Utilisation CPU (%)",
-              "rgba(46, 134, 222, 1)"
-            )}
-            options={lineChartOptions("Utilisation (%)")}
-            height={300}
-          />
-        </div>
-        <div
-          className="bg-white p-6 rounded-lg shadow-lg"
-          style={{ height: "400px" }}
-        >
-          <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
-            Utilisation de la mémoire : {metrics.memory_usage[49] ?? "N/A"}%
-          </h2>
-          <Line
-            data={lineChartData(
-              labels,
-              metrics.memory_usage,
-              "Utilisation Mémoire (%)",
-              "rgba(61, 193, 211, 1)"
-            )}
-            options={lineChartOptions("Utilisation (%)")}
-            height={300}
-          />
-        </div>
-
-        <div
-          className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center"
-          style={{ height: "400px" }}
-        >
-          <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
-            Utilisation du disque : {metrics.disk_usage[49] ?? "N/A"}%
-          </h2>
+      {selectedServer ? (
+        <div className="w-full max-w-7xl grid grid-cols-1 md:grid-cols-2 gap-6">
           <div
-            className="flex justify-center items-center"
-            style={{ height: "400px", width: "100%" }}
+            className="bg-white p-6 rounded-lg shadow-lg"
+            style={{ height: "400px" }}
           >
-            <Pie
-              data={pieChartData({ disk_usage: metrics.disk_usage[49] })}
-              options={pieChartOptions}
+            <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
+              Température CPU : {metrics.cpu_temperature.at(-1) ?? "N/A"}°C
+            </h2>
+            <Line
+              data={lineChartData(
+                labels,
+                metrics.cpu_temperature,
+                "Température CPU (°C)",
+                "rgba(230, 57, 70, 1)"
+              )}
+              options={lineChartOptions("Température (°C)")}
+              height={300}
             />
           </div>
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg"
+            style={{ height: "400px" }}
+          >
+            <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
+              Utilisation CPU : {metrics.cpu_usage.at(-1) ?? "N/A"}%
+            </h2>
+            <Line
+              data={lineChartData(
+                labels,
+                metrics.cpu_usage,
+                "Utilisation CPU (%)",
+                "rgba(46, 134, 222, 1)"
+              )}
+              options={lineChartOptions("Utilisation (%)")}
+              height={300}
+            />
+          </div>
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg"
+            style={{ height: "400px" }}
+          >
+            <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
+              Utilisation de la mémoire : {metrics.memory_usage.at(-1) ?? "N/A"}
+              %
+            </h2>
+            <Line
+              data={lineChartData(
+                labels,
+                metrics.memory_usage,
+                "Utilisation Mémoire (%)",
+                "rgba(61, 193, 211, 1)"
+              )}
+              options={lineChartOptions("Utilisation (%)")}
+              height={300}
+            />
+          </div>
+
+          <div
+            className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center"
+            style={{ height: "400px" }}
+          >
+            <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">
+              Utilisation du disque : {metrics.disk_usage.at(-1) ?? "N/A"}%
+            </h2>
+            <div
+              className="flex justify-center items-center"
+              style={{ height: "400px", width: "100%" }}
+            >
+              <Pie
+                data={pieChartData({ disk_usage: metrics.disk_usage.at(-1) })}
+                options={pieChartOptions}
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <p className="text-gray-700">
+          Aucun serveur disponible. Vérifiez la base de données.
+        </p>
+      )}
 
       {/* Tableau des derniers relevés avec pagination */}
-      <Tableau />
+      <Tableau serverId={selectedServer} />
 
       <div className="fixed bottom-5 right-0 mr-10 z-30 flex justify-end rounded-full">
         <button

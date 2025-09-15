@@ -8,8 +8,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
 import Button from "@mui/material/Button";
+import toast from "react-hot-toast";
 
-const Tableau = () => {
+const Tableau = ({ serverId }) => {
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCount, setTotalCount] = useState(0);
@@ -17,10 +18,11 @@ const Tableau = () => {
 
   // Récupérer les données paginées pour le tableau
   const fetchPaginatedData = async () => {
+    if (!serverId) return;
+
     try {
-      const response = await fetch(
-        `http://localhost:5000/api/paginated_metrics?page=${currentPage}&limit=${rowsPerPage}`
-      );
+      const url = `http://localhost:5000/api/paginated_metrics?server_id=${serverId}&page=${currentPage}&limit=${rowsPerPage}`;
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
@@ -36,16 +38,26 @@ const Tableau = () => {
     }
   };
 
-  // useEffect pour le tableau : fetch sur mount/page change, et interval auto si page=1
+  // useEffect pour le tableau : fetch sur mount/page change/server change, et interval auto si page=1
   useEffect(() => {
     fetchPaginatedData();
 
     let interval;
-    if (currentPage === 1) {
+    if (currentPage === 1 && serverId) {
       interval = setInterval(fetchPaginatedData, 5000);
     }
     return () => clearInterval(interval);
-  }, [currentPage]);
+  }, [currentPage, serverId]);
+
+  if (!serverId) {
+    return (
+      <div className="w-full max-w-7xl mt-6 bg-white p-6 rounded-lg shadow-lg">
+        <p className="text-gray-700">
+          Sélectionnez un serveur pour voir le tableau.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-7xl mt-6 bg-white p-6 rounded-lg shadow-lg">
