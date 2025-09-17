@@ -1,0 +1,87 @@
+C'est bien, mais j'ai juste ajouter quelque modification :
+1. Structure de dossier actuel :
+apmf-project/
+├── backend/
+│   ├── app.py                 # API Flask principale
+│   ├── server.py              # Collecteur de métriques
+│   ├── requirements.txt       # Dépendances Python
+│   ├── Dockerfile             # Pour l'API Flask
+│   └── Dockerfile.server      # Pour le collecteur
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── SecureRoutes.jsx
+│   │   │   ├── Tableau.jsx
+│   │   │   └── utils.jsx
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   ├── package.json
+│   └── Dockerfile
+├── server_collector/
+│   ├── .env                # Contient MONGODB_URI et SECRET_KEY (Pareil pour le root)
+│   ├── server.py           # Collecteur de métriques pour le serveur distant
+│   ├── requirements.txt    # Dépendances Python
+│   ├── docker-compose.yml  # Orchestration des containers
+│   └── Dockerfile          # Pour l'API Flask
+├── docker-compose.yml      # Orchestration des containers
+└── .env                    # Variables d'environnement
+
+Et voici (attachement) les fichier respectif de ce nouveau dossier (server_collector), ceci ne peut pas être attacher :
+
+server_collector/Dockerfile:
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Installer les dépendances système nécessaires pour psutil
+RUN apt-get update && apt-get install -y \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY server.py .
+
+CMD ["python", "server.py"]
+
+server_collector/.env:
+MONGODB_URI=mongodb+srv://bendev:bendev2799@cluster0.g63wzbs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+SECRET_KEY=dcfvgbhnjlsefsf22fsegfsefmknk8$52
+# SERVER_ID=kali1
+
+apmf-projet/docker-compose.yml :
+services:
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+    env_file:
+      - .env
+    depends_on:
+      - collector
+
+  collector:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.server
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - SERVER_ID=server1
+    env_file:
+      - .env
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api
