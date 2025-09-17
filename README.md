@@ -1,5 +1,9 @@
 # Projet de supervision de Serveurs à distance et à temps réel 🖥️
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub Stars](https://img.shields.io/github/stars/bendev99/projet-apmf)](https://github.com/bendev99/projet-apmf)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/bendev99/projet-apmf)
+
 Bienvenue dans **APMF Monitoring** (Application de Monitoring de Performance d'un Serveur, càs de l'APMF), une solution open-source pour superviser les performances de vos serveurs en temps réel ! 🌟 Collectez, stockez et visualisez les métriques système (CPU, mémoire, disque, température) avec une interface moderne et des services backend robustes.
 
 ---
@@ -163,6 +167,10 @@ projet-apmf/
 3. **Export** : Cliquez sur "Télécharger l'historique" pour un CSV. 📥
 4. **Déconnexion** : Utilisez l'icône en bas à droite. 🚪
 
+### Apercu de la tableau de bord de l'application
+
+![Screenshot](https://imgur.com/a/xHaFt5d)
+
 ---
 
 ## 🔧 Développement Local
@@ -246,13 +254,26 @@ projet-apmf/
 
 ---
 
+## 📜 Licence
+
+Ce projet est sous licence ![MIT](https://img.shields.io/badge/license-MIT-blue.svg). Vous êtes libre de l’utiliser, modifier et distribuer selon les termes de cette licence.
+
+---
+
 ## ❤️ Soutenir le Projet
 
-Si ce projet vous aide, partagez-le ou contribuez ! Des idées ou du feedback ? Contactez-nous sur [GitHub](#). Merci ! 🙏
-Si par bonté vous voulez m'envoyer un petit cadeau n'hésitez pas de l'envoyer au numéro suivant :
+Si ce projet vous aide, partagez-le ou contribuez ! Des idées ou du feedback ? Contactez-moi sur :
 
-```Numéro
+- [WhatsApp](https://wa.me/+261343786570)
+- [Telegram](https://t.me/+261343786570)
+- [Gmail](mailto:benbenedictin@gmail.com)
+
+Pour un petit geste de soutien, vous pouvez envoyer un don à :
+
+```plaintext
 0331725084 (Airtel Money)
 0343786570 (Mvola)
 Tsahatsy Benedictin
 ```
+
+Merci beaucoup pour votre attention ! 🙏
