@@ -1,8 +1,8 @@
 # Projet de supervision de Serveurs à distance et à temps réel 🖥️
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub Stars](https://img.shields.io/github/stars/bendev99/projet-apmf)](https://github.com/bendev99/projet-apmf)
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/bendev99/projet-apmf)
+[![GitHub Stars](https://img.shields.io/github/stars/bendev99/projet-apmf)](https://github.com/bendev99/projet-apmf.git)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://github.com/bendev99/projet-apmf.git)
 
 Bienvenue dans **APMF Monitoring** (Application de Monitoring de Performance d'un Serveur, càs de l'APMF), une solution open-source pour superviser les performances de vos serveurs en temps réel ! 🌟 Collectez, stockez et visualisez les métriques système (CPU, mémoire, disque, température) avec une interface moderne et des services backend robustes.
 
@@ -169,7 +169,7 @@ projet-apmf/
 
 ### Apercu de la tableau de bord de l'application
 
-![Screenshot](https://imgur.com/a/xHaFt5d)
+![Screenshot](frontend/public/Dashboard.png)
 
 ---
 
