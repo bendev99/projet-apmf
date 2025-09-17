@@ -12,6 +12,8 @@ frontend/dist
 frontend/dist-ssr
 frontend/*.local
 
+server-deploiment/.env
+
 static
 
 .env

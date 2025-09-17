@@ -99,7 +99,7 @@ const Dashboard = () => {
 
       // Générer le contenu CSV
       let csvContent =
-        "Date et Heure,Température CPU,Utilisation CPU,Utilisation mémoire,Utilisation disque\n";
+        "Date et Heure,Température CPU (°C),Utilisation CPU (%),Utilisation mémoire (%),Utilisation disque (%)\n";
       data.timestamps.forEach((timestamp, index) => {
         const date = new Date(timestamp);
 

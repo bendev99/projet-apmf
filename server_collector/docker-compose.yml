@@ -1,0 +1,11 @@
+services:
+  collector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MONGODB_URI=${MONGODB_URI}
+      - SERVER_ID=server2
+    env_file:
+      - .env
+    restart: unless-stopped
