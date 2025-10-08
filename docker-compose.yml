@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile.server
     environment:
       - MONGODB_URI=${MONGODB_URI}
-      - SERVER_ID=server1
+      - SERVER_ID=local
     env_file:
       - .env
 

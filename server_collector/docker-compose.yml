@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - MONGODB_URI=${MONGODB_URI}
-      - SERVER_ID=server2
+      - SERVER_ID=server1
     env_file:
       - .env
     restart: unless-stopped
