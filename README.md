@@ -160,6 +160,7 @@ projet-apmf/
 ## 🖥️ Utilisation
 
 1. **Connexion** : Utilisez `admin`/`admin` pour accéder au tableau de bord. 🔑
+   `Vous pouvez changer ceci dans le composant Login.jsx du frontend`
 2. **Supervision** :
    - Choisissez un serveur dans le menu déroulant. 🖱️
    - Visualisez les graphiques (CPU, mémoire, disque) mis à jour toutes les 5 secondes. 📊
