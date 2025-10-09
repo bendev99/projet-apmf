@@ -3,7 +3,7 @@ import Dashboard from "./components/Dashboard";
 import Login from "./components/Login";
 import { Toaster } from "react-hot-toast";
 import SecureRoutes from "./components/SecureRoutes";
-import Dht22 from "./components/Dht22";
+import Capteur from "./components/Capteur";
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route element={<SecureRoutes />}>
           <Route path="/" element={<Dashboard />} />
-          <Route path="/capteurs" element={<Dht22 />} />
+          <Route path="/capteurs" element={<Capteur />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

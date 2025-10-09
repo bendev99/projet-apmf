@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:5000");
 
-export default function TemperatureMonitor() {
+const Capteur = () => {
   const [temperature, setTemperature] = useState("...");
   const [humidity, setHumidity] = useState("...");
 
@@ -29,4 +29,6 @@ export default function TemperatureMonitor() {
       <p className="text-3xl">{humidity} %</p>
     </div>
   );
-}
+};
+
+export default Capteur;
