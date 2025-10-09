@@ -12,6 +12,8 @@ frontend/dist
 frontend/dist-ssr
 frontend/*.local
 
+mqtt_server/node_modules
+
 server-deploiment/.env
 
 static
