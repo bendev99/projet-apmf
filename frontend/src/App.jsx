@@ -11,8 +11,8 @@ function App() {
       <Toaster />
       <Routes>
         <Route element={<SecureRoutes />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/capteurs" element={<Capteur />} />
+          <Route path="/d" element={<Dashboard />} />
+          <Route path="/" element={<Capteur />} />
         </Route>
 
         <Route path="/login" element={<Login />} />
