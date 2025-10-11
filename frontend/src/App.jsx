@@ -4,6 +4,7 @@ import Login from "./components/Login";
 import { Toaster } from "react-hot-toast";
 import SecureRoutes from "./components/SecureRoutes";
 import Capteur from "./components/Capteur";
+import GaugeChart from "./components/GaugeChart";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route element={<SecureRoutes />}>
           <Route path="/d" element={<Dashboard />} />
           <Route path="/" element={<Capteur />} />
+          <Route path="/g" element={<GaugeChart />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

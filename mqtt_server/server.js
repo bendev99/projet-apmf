@@ -9,7 +9,7 @@ import { Parser } from "json2csv";
 import DonnerCapteur from "./models/DonnerCapteur.js";
 
 //  CONFIG
-const MQTT_BROKER = "mqtt://192.168.1.110:1883"; // Adresse IP locale Mosquitto (IP du PC)
+const MQTT_BROKER = "mqtt://10.121.249.48:1883"; // Adresse IP locale Mosquitto (IP du PC)
 const MQTT_TOPIC = "capteurs/serveur"; // Le même topic que ton ESP32
 const PORT = 5000;
 const MONGO_URI = "mongodb://localhost:27017/mqtt_data";
@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
 app.get("/api/history", async (req, res) => {
   try {
     // paramètres optionnels: limit et since
-    const limit = parseInt(req.query.limit || "100", 10);
+    const limit = parseInt(req.query.limit || "5", 10);
     const results = await DonnerCapteur.find()
       .sort({ timestamp: -1 })
       .limit(limit);
@@ -114,7 +114,7 @@ app.get("/api/download", async (req, res) => {
       return res.status(404).send("Aucune donnée à télécharger");
 
     // Convertir en CSV
-    const fields = ["timestamp", "temperature", "humidity"];
+    const fields = ["Date et Heure", "Température", "Humidité"];
     const parser = new Parser({ fields });
     const csv = parser.parse(data);
 
