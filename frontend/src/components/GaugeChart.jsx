@@ -9,7 +9,7 @@ const GaugeChart = ({ percentage = 20, label = "Progress", unity }) => {
     <div className="flex items-center justify-center">
       <div className="flex flex-col items-center w-80">
         {/* Conteneur de la demi-jauge */}
-        <div className="text-sm text-gray-600 text-center font-bold">
+        <div className="text-sm text-gray-800 text-center font-bold">
           {label}
         </div>
         <div className="relative w-48 h-24 overflow-hidden">

@@ -9,6 +9,8 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import TableBody from "@mui/material/TableBody";
 import Paper from "@mui/material/Paper";
+import toast from "react-hot-toast";
+import { RiLogoutCircleLine } from "react-icons/ri";
 
 const socket = io("http://localhost:5000");
 
@@ -62,6 +64,13 @@ function Capteur() {
   // Dernière donnée en temps réel
   const latest = historique[historique.length - 1];
 
+  const deconnexion = () => {
+    window.localStorage.removeItem("user");
+    toast.success("Deconnexion réussi !");
+
+    navigate("/login");
+  };
+
   return (
     <div className="py-5 px-16 w-[80%] items-center justify-center mx-auto">
       <div className="flex w-full justify-between">
@@ -77,10 +86,14 @@ function Capteur() {
       <div className="flex items-center justify-around bg-gray-200 p-2 rounded-4xl mt-3">
         <GaugeChart
           percentage={latest?.temperature}
-          label="Température"
+          label="Température 🌡️"
           unity="°C"
         />
-        <GaugeChart percentage={latest?.humidity} label="Humidité" unity="%" />
+        <GaugeChart
+          percentage={latest?.humidity}
+          label="Humidité 💧"
+          unity="%"
+        />
       </div>
 
       {latest ? (
@@ -150,6 +163,15 @@ function Capteur() {
             </TableBody>
           </Table>
         </TableContainer>
+      </div>
+
+      <div className="fixed bottom-5 right-0 mr-10 z-30 flex justify-end rounded-full">
+        <button
+          onClick={deconnexion}
+          className="bg-blue-950 rounded-full shadow-lg hover:scale-110 transition-transform rotate-180 duration-300 w-8 h-8 items-center justify-center flex text-white text-2xl cursor-pointer"
+        >
+          <RiLogoutCircleLine />
+        </button>
       </div>
     </div>
   );
