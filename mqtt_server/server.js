@@ -46,7 +46,7 @@ client.on("connect", () => {
 });
 
 client.on("error", (err) => {
-  console.error("MQTT Error:", err);
+  console.error("Erreur connexion MQTT : ", err);
 });
 
 // Quand un message arrive, sauvegarde et émet via socket.io
@@ -83,7 +83,7 @@ client.on("message", async (topic, message) => {
   }
 });
 
-// ====== SOCKET.IO connection logging ======
+// SOCKET.IO connection logging
 io.on("connection", (socket) => {
   console.log("🔌 Client Socket.IO connecté:", socket.id);
   socket.on("disconnect", () => {
@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
   });
 });
 
-// ====== API REST pour historique ======
+// API REST pour historique
 app.get("/api/history", async (req, res) => {
   try {
     // paramètres optionnels: limit et since
@@ -130,7 +130,7 @@ app.get("/api/download", async (req, res) => {
 // optionnel: route health
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
-// ====== LANCE LE SERVEUR ======
+// LANCE LE SERVEUR
 server.listen(PORT, () => {
   console.log(`🚀 Serveur backend démarré sur http://localhost:${PORT}`);
 });
