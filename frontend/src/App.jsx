@@ -12,9 +12,8 @@ function App() {
       <Toaster />
       <Routes>
         <Route element={<SecureRoutes />}>
-          <Route path="/d" element={<Dashboard />} />
-          <Route path="/" element={<Capteur />} />
-          <Route path="/g" element={<GaugeChart />} />
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/c" element={<Capteur />} />
         </Route>
 
         <Route path="/login" element={<Login />} />

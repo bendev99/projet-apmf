@@ -27,7 +27,7 @@ function Capteur() {
   useEffect(() => {
     // Charger l'historique au démarrage
     axios
-      .get("http://localhost:5000/api/history")
+      .get("http://localhost:5000/api/metrics")
       .then((res) => setHistorique(res.data.reverse())) // ordre chronologique
       .catch((err) => console.error(err));
 
@@ -45,7 +45,7 @@ function Capteur() {
 
   const telechargerCSV = () => {
     axios({
-      url: "http://localhost:5000/api/download",
+      url: "http://localhost:5000/api/all_data",
       method: "GET",
       responseType: "blob",
     })

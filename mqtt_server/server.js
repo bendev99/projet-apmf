@@ -11,7 +11,7 @@ import DonnerCapteur from "./models/DonnerCapteur.js";
 //  CONFIG
 const MQTT_BROKER = "mqtt://10.121.249.48:1883"; // Adresse IP locale Mosquitto (IP du PC)
 const MQTT_TOPIC = "capteurs/serveur"; // Le même topic que ton ESP32
-const PORT = 5000;
+const PORT = 5001;
 const MONGO_URI = "mongodb://localhost:27017/mqtt_data";
 
 // SERVEUR WEB + SOCKET.IO
@@ -27,8 +27,8 @@ const io = new Server(server, {
 // MONGODB
 mongoose
   .connect(MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
   })
   .then(() => console.log("✅ Connecté à MongoDB"))
   .catch((err) => console.error("Erreur MongoDB:", err));

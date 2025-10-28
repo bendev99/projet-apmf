@@ -86,8 +86,8 @@ projet-apmf/
 
 ## 📋 Prérequis
 
-- **Docker** et **Docker Compose** (pour conteneurisation)
-- **Node.js 18** (développement local frontend)
+- **Docker** et **Docker Compose** version 2.x recommandée (pour conteneurisation)
+- **Node.js 22** (développement local frontend)
 - **Python 3.12** (développement local backend/collecteurs)
 - **MongoDB** (instance locale ou cloud, ex. : MongoDB Atlas)
 - Compte par défaut : `admin`/`admin` (configurable dans `frontend/src/components/Login.jsx`)
