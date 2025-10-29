@@ -9,7 +9,7 @@ import { Parser } from "json2csv";
 import DonnerCapteur from "./models/DonnerCapteur.js";
 
 //  CONFIG
-const MQTT_BROKER = "mqtt://10.121.249.48:1883"; // Adresse IP locale Mosquitto (IP du PC)
+const MQTT_BROKER = "mqtt://192.168.1.106:1883"; // Adresse IP locale Mosquitto (IP du PC)
 const MQTT_TOPIC = "capteurs/serveur"; // Le même topic que ton ESP32
 const PORT = 5001;
 const MONGO_URI = "mongodb://localhost:27017/mqtt_data";

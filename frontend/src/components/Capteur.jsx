@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import toast from "react-hot-toast";
 import { RiLogoutCircleLine } from "react-icons/ri";
 
-const socket = io("http://localhost:5000");
+const socket = io("http://localhost:5001");
 
 function Capteur() {
   const [historique, setHistorique] = useState([]);
@@ -27,7 +27,7 @@ function Capteur() {
   useEffect(() => {
     // Charger l'historique au démarrage
     axios
-      .get("http://localhost:5000/api/metrics")
+      .get("http://localhost:5001/api/metrics")
       .then((res) => setHistorique(res.data.reverse())) // ordre chronologique
       .catch((err) => console.error(err));
 
@@ -45,7 +45,7 @@ function Capteur() {
 
   const telechargerCSV = () => {
     axios({
-      url: "http://localhost:5000/api/all_data",
+      url: "http://localhost:5001/api/all_data",
       method: "GET",
       responseType: "blob",
     })
