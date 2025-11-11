@@ -1,0 +1,54 @@
+# Python
+# backend
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/*.so
+backend/.Python
+backend/venv/
+backend/env/
+backend/ENV/
+
+backend/.env
+backend/.env.local
+backend/.env.production
+backend/.env.*.local
+
+# collector
+collector/__pycache__/
+collector/*.py[cod]
+collector/*$py.class
+collector/*.so
+collector/.Python
+collector/venv/
+collector/env/
+collector/ENV/
+
+collector/.env
+collector/.env.local
+collector/.env.production
+collector/.env.*.local
+
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/*.log
+
+# Environment variables
+backend/.env
+collector/.env
+frontend/.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
