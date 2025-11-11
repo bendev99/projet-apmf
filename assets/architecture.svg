@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700">
+  <style>
+    .box { fill:#0b1220; stroke:#38bdf8; stroke-width:2; rx:14; ry:14; }
+    .title { font:700 16px 'Inter', Arial, sans-serif; fill:#e5e7eb; }
+    .text { font:400 14px 'Inter', Arial, sans-serif; fill:#cbd5e1; }
+    .chip { fill:#111827; stroke:#22d3ee; stroke-width:1.5; rx:10; ry:10; }
+    .label { font:600 12px 'Inter', Arial, sans-serif; fill:#93c5fd; }
+  </style>
+
+  <rect width="1200" height="700" fill="#0f172a"/>
+
+  <!-- Frontend -->
+  <g transform="translate(70,80)">
+    <rect class="box" width="320" height="220"/>
+    <text class="title" x="20" y="36">Frontend (React + Vite)</text>
+    <text class="text" x="20" y="70">• Dashboard / Graphiques</text>
+    <text class="text" x="20" y="96">• Auth JWT / Routes</text>
+    <text class="text" x="20" y="122">• Axios & Toasts</text>
+    <g transform="translate(20,150)">
+      <rect class="chip" width="120" height="30"/><text class="label" x="10" y="20">Tailwind CSS</text>
+      <g transform="translate(140,0)"><rect class="chip" width="120" height="30"/><text class="label" x="10" y="20">Chart.js/Recharts</text></g>
+    </g>
+  </g>
+
+  <!-- Backend -->
+  <g transform="translate(440,80)">
+    <rect class="box" width="320" height="220"/>
+    <text class="title" x="20" y="36">Backend (Flask API)</text>
+    <text class="text" x="20" y="70">• Endpoints REST / Auth</text>
+    <text class="text" x="20" y="96">• Règles & seuils alertes</text>
+    <text class="text" x="20" y="122">• Persistance MongoDB</text>
+    <g transform="translate(20,150)">
+      <rect class="chip" width="120" height="30"/><text class="label" x="10" y="20">JWT</text>
+      <g transform="translate(140,0)"><rect class="chip" width="120" height="30"/><text class="label" x="10" y="20">Gunicorn</text></g>
+    </g>
+  </g>
+
+  <!-- MongoDB -->
+  <g transform="translate(810,80)">
+    <rect class="box" width="320" height="220"/>
+    <text class="title" x="20" y="36">MongoDB Atlas</text>
+    <text class="text" x="20" y="70">• Métriques</text>
+    <text class="text" x="20" y="96">• Alertes</text>
+    <text class="text" x="20" y="122">• Utilisateurs</text>
+  </g>
+
+  <!-- Collector -->
+  <g transform="translate(440,370)">
+    <rect class="box" width="320" height="220"/>
+    <text class="title" x="20" y="36">Collector (Python)</text>
+    <text class="text" x="20" y="70">• SSH (Paramiko)</text>
+    <text class="text" x="20" y="96">• psutil / schedule</text>
+    <text class="text" x="20" y="122">• Push API Backend</text>
+  </g>
+
+  <!-- Servers Monitored -->
+  <g transform="translate(70,370)">
+    <rect class="box" width="320" height="220"/>
+    <text class="title" x="20" y="36">Serveurs surveillés (Linux)</text>
+    <text class="text" x="20" y="70">• SSH activé</text>
+    <text class="text" x="20" y="96">• Clé publique autorisée</text>
+    <text class="text" x="20" y="122">• top / df / free / sensors</text>
+  </g>
+
+  <!-- Arrows -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#38bdf8"/>
+    </marker>
+  </defs>
+
+  <!-- Frontend -> Backend -->
+  <line x1="390" y1="190" x2="440" y2="190" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Backend -> MongoDB -->
+  <line x1="760" y1="190" x2="810" y2="190" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Collector -> Backend -->
+  <line x1="600" y1="370" x2="600" y2="300" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- Servers -> Collector -->
+  <line x1="390" y1="480" x2="440" y2="480" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+</svg>
