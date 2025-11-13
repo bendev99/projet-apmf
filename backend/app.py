@@ -10,16 +10,19 @@ from routes.targets import targets_bp
 from routes.metrics import metrics_bp
 from routes.alerts import alerts_bp
 
+import os
+
 # Initialisation de l'app
 app = Flask(__name__)
 app.config.from_object(Config)
 
 # Configuration CORS
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
 CORS(app, resources={
     r"/api/*": {
         "origins": Config.ALLOWED_ORIGINS,
-        "methods": ["GET", "POST", "PUT", "DELETE"],
-        "allow_headers": ["Content-Type", "Authorization"]
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
     }
 }, supports_credentials=True)
 

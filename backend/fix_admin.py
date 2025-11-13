@@ -1,42 +1,54 @@
 from utils.db import users
-from models.user import User
+from werkzeug.security import generate_password_hash, check_password_hash
+from config import Config
+from datetime import datetime
 
-print("🔧 Nettoyage de la collection users...")
+print("🔧 Nettoyage et création admin...")
 
-# Supprimer TOUS les utilisateurs
-result = users.delete_many({})
-print(f"✅ {result.deleted_count} utilisateur(s) supprimé(s)")
+# Optionnel : Supprime TOUS users (pour clean ; skip si prod)
+result_delete = users.delete_many({})
+print(f"✅ {result_delete.deleted_count} utilisateur(s) supprimé(s)")
 
-# Recréer l'admin
-print("\n👤 Création du nouvel admin...")
+# Crée admin avec hash built-in
 try:
-    admin = User.create(
-        username="admin",
-        email="admin@example.com",
-        password="admin123",
-        role="admin"
-    )
-    print(f"✅ Admin créé avec succès!")
-    print(f"   Username: {admin['username']}")
-    print(f"   Email: {admin['email']}")
-    print(f"   Role: {admin['role']}")
-
-    # Test de connexion
-    print("\n🧪 Test de connexion...")
-    test_user = User.find_by_username("admin")
-
-    if test_user:
-        print(f"✅ Admin trouvé: {test_user['username']}")
-
-        # Test du mot de passe
-        if User.verify_password(test_user['password'], "admin123"):
-            print("✅ Mot de passe 'admin123' vérifié avec succès!")
+    # Vérifie si admin existe déjà
+    existing_admin = users.find_one({"username": "admin"})
+    if existing_admin:
+        print("⚠️ Admin existe ; update password seulement")
+        new_hash = generate_password_hash(Config.DEFAULT_ADMIN_PASSWORD, method='pbkdf2:sha256')
+        update_result = users.update_one(
+            {"username": "admin"},
+            {"$set": {"password": new_hash}}
+        )
+        if update_result.modified_count > 0:
+            print("✅ Password admin mis à jour !")
         else:
-            print("❌ Erreur: Mot de passe incorrect")
+            print("⚠️ Pas de changement (déjà hashé)")
     else:
-        print("❌ Erreur: Admin non trouvé après création")
+        # Crée nouveau
+        admin_data = {
+            "username": Config.DEFAULT_ADMIN_USERNAME,
+            "email": Config.DEFAULT_ADMIN_EMAIL,
+            "password": generate_password_hash(Config.DEFAULT_ADMIN_PASSWORD, method='pbkdf2:sha256'),
+            "role": "admin",
+            "created_at": datetime.utcnow().isoformat()
+        }
+        insert_result = users.insert_one(admin_data)
+        print(f"✅ Admin créé (ID: {insert_result.inserted_id})")
+
+    # Vérif final
+    admin = users.find_one({"username": "admin"})
+    if admin:
+        print(f"Admin: {admin['username']} (email: {admin['email']}, role: {admin['role']})")
+        print(f"Hash preview: {admin['password'][:30]}...")  # Tronqué sécurité
+        if check_password_hash(admin['password'], Config.DEFAULT_ADMIN_PASSWORD):
+            print(f"✅ Vérif OK pour '{Config.DEFAULT_ADMIN_PASSWORD}' !")
+        else:
+            raise Exception("❌ Vérif password fail ; check hash")
+    else:
+        raise Exception("❌ Admin non trouvé après création")
 
 except Exception as e:
-    print(f"❌ Erreur lors de la création: {e}")
-    import traceback
-    traceback.print_exc()
+    print(f"❌ Erreur création/update: {e}")
+
+print("🎉 Fix admin fini. Test login maintenant.")
