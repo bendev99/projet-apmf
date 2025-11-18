@@ -77,9 +77,9 @@ def missing_token_callback(error):
 
 if __name__ == '__main__':
     # Initialiser la base de données
-    print("🔧 Initialisation de la base de données...")
+    print("Initialisation de la base de données...")
     init_db()
     create_default_admin()
 
-    print(f"🚀 Démarrage du serveur sur le port {Config.PORT}...")
+    print(f"Démarrage du serveur sur le port {Config.PORT}...")
     app.run(host='0.0.0.0', port=Config.PORT, debug=True)

@@ -20,9 +20,9 @@ def test_ssh():
             print(stdout.read().decode())
 
         ssh.close()
-        print("\n✅ Tout fonctionne parfaitement!")
+        print("\nTout fonctionne parfaitement!")
 
     except Exception as e:
-        print(f"❌ Erreur: {e}")
+        print(f"Erreur: {e}")
 
 test_ssh()

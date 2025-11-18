@@ -328,6 +328,22 @@ Créez 3 fichier `.env` :
 
 ---
 
+## Accès à distance (note)
+
+# 1. Option A : Depuis votre machine locale
+
+cat ./ssh_keys/apmf_key.pub | ssh utilisateur@ip_du_serveur 'mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys'
+
+# 2. Redémarrer SSH (si nécessaire)
+
+sudo systemctl restart sshd
+
+# 3. Tester la connexion depuis votre machine
+
+ssh -i ./ssh_keys/apmf_key utilisateur@ip_du_serveur 'uptime'
+
+---
+
 ## 🤝 Contribution
 
 Les contributions sont les bienvenues ! Voici comment contribuer :

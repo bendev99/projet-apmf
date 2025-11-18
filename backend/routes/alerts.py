@@ -98,7 +98,6 @@ def clear_all_alerts():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# MODIFIÉ : Pas de @jwt_required() ici (utilisé par le collector)
 @alerts_bp.get('/rules/<server_id>')
 def get_alert_rules(server_id):
     """Récupérer les règles d'alerte pour un serveur"""
@@ -149,7 +148,6 @@ def set_alert_rules(server_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# MODIFIÉ : Pas de @jwt_required() ici (utilisé par le collector)
 @alerts_bp.post('/create')
 def create_alert():
     """Créer une nouvelle alerte (utilisé par le collector)"""

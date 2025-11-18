@@ -33,10 +33,10 @@ def init_db():
         alerts_config.create_index([("server_id", ASCENDING)], unique=True)
         alerts_history.create_index([("server_id", ASCENDING), ("timestamp", DESCENDING)])
 
-        print("✅ Index MongoDB créés avec succès")
+        print("Index MongoDB créés avec succès")
 
     except Exception as e:
-        print(f"⚠️  Erreur lors de la création des index: {e}")
+        print(f"Erreur lors de la création des index: {e}")
 
 def create_default_admin():
     """Créer l'utilisateur admin par défaut s'il n'existe pas"""
@@ -47,7 +47,7 @@ def create_default_admin():
     existing_admin = users.find_one({"username": Config.DEFAULT_ADMIN_USERNAME})
 
     if existing_admin:
-        print(f"ℹ️  Admin '{Config.DEFAULT_ADMIN_USERNAME}' déjà existant")
+        print(f"ℹAdmin '{Config.DEFAULT_ADMIN_USERNAME}' déjà existant")
         return
 
     # Créer l'admin
@@ -65,4 +65,4 @@ def create_default_admin():
     }
 
     users.insert_one(admin_user)
-    print(f"✅ Admin créé: {Config.DEFAULT_ADMIN_USERNAME} / {Config.DEFAULT_ADMIN_PASSWORD}")
+    print(f"Admin créé: {Config.DEFAULT_ADMIN_USERNAME} / {Config.DEFAULT_ADMIN_PASSWORD}")

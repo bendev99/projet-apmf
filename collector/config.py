@@ -7,7 +7,7 @@ class Config:
     # MongoDB
     MONGODB_URI = os.getenv("MONGODB_URI")
     if not MONGODB_URI:
-        raise SystemExit("❌ Erreur: MONGODB_URI manquant dans .env")
+        raise SystemExit("Erreur: MONGODB_URI manquant dans .env")
 
     # Backend API
     # BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:5000").rstrip('/')
