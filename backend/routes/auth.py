@@ -22,7 +22,7 @@ def login():
         user = users.find_one({"username": username})
 
         if not user:
-            # ❌ NE PAS dire "utilisateur n'existe pas" (sécurité)
+            # NE PAS dire "utilisateur n'existe pas" (sécurité)
             return jsonify({"error": "Identifiants incorrects"}), 401
 
         # Vérifier le mot de passe
@@ -43,7 +43,7 @@ def login():
         }), 200
 
     except Exception as e:
-        print(f"❌ Erreur login: {e}")
+        print(f"Erreur login: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": "Erreur serveur"}), 500
@@ -80,7 +80,7 @@ def register():
         return jsonify({"message": "Utilisateur créé avec succès"}), 201
 
     except Exception as e:
-        print(f"❌ Erreur register: {e}")
+        print(f"Erreur register: {e}")
         return jsonify({"error": "Erreur serveur"}), 500
 
 

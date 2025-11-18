@@ -187,7 +187,7 @@ export default function Dashboard() {
                 <img src="/logo.png" alt="Logo APMF" className="w-15 h-15" />
                 <div>
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                    Server Monitor
+                    Supervision des serveurs
                   </h1>
                   <p className="text-xs md:text-sm text-gray-600 mt-1">
                     Connecté en tant que{" "}

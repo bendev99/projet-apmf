@@ -90,15 +90,15 @@ def get_metric_history(server_id):
 def get_all_metrics_history(server_id):
     """Récupérer TOUTES les métriques d'un serveur sans limite"""
     try:
-        print(f"📦 Récupération de TOUTES les métriques pour {server_id}")
+        print(f"Récupération de TOUTES les métriques pour {server_id}")
 
-        # ✅ CORRECTION : Renommer la variable locale pour éviter le conflit
+        # Renommer la variable locale pour éviter le conflit
         all_metrics = list(metrics.find(
             {"server_id": server_id},
             sort=[("timestamp", -1)]
         ))
 
-        print(f"✅ Trouvé {len(all_metrics)} métriques pour {server_id}")
+        print(f"Trouvé {len(all_metrics)} métriques pour {server_id}")
 
         # Convertir ObjectId en string pour la sérialisation JSON
         for metric in all_metrics:
@@ -111,7 +111,7 @@ def get_all_metrics_history(server_id):
         }), 200
 
     except Exception as e:
-        print(f"❌ Erreur get_all_metrics_history: {e}")
+        print(f"Erreur get_all_metrics_history: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500

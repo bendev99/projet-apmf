@@ -8,12 +8,12 @@ class Config:
     # MongoDB
     MONGODB_URI = os.getenv("MONGODB_URI")
     if not MONGODB_URI:
-        raise SystemExit("❌ Erreur: MONGODB_URI manquant dans .env")
+        raise SystemExit("Erreur: MONGODB_URI manquant dans .env")
 
     # JWT
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
     if not JWT_SECRET_KEY:
-        raise SystemExit("❌ Erreur: JWT_SECRET_KEY manquant dans .env")
+        raise SystemExit("Erreur: JWT_SECRET_KEY manquant dans .env")
     JWT_ACCESS_TOKEN_EXPIRES = 86400  # 24 heures
 
     # API
@@ -28,7 +28,7 @@ class Config:
             if not isinstance(ALLOWED_ORIGINS, list):
                 ALLOWED_ORIGINS = [ALLOWED_ORIGINS]
         except json.JSONDecodeError:
-            print("⚠️ ALLOWED_ORIGINS invalide dans .env ; utilisation default")
+            print("ALLOWED_ORIGINS invalide dans .env ; utilisation default")
             ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
     else:
         ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
