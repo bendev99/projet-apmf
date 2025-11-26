@@ -21,9 +21,9 @@ class Config:
 
     # CORS Origins (liste pour credentials=True)
     ALLOWED_ORIGINS_STR = os.getenv("ALLOWED_ORIGINS")
-    if ALLOWED_ORIGINS_RAW:
+    if ALLOWED_ORIGINS_STR:
         try:
-            ALLOWED_ORIGINS = json.loads(ALLOWED_ORIGINS_RAW)
+            ALLOWED_ORIGINS = json.loads(ALLOWED_ORIGINS_STR)
             if not isinstance(ALLOWED_ORIGINS, list):
                 ALLOWED_ORIGINS = [ALLOWED_ORIGINS]
         except Exception:

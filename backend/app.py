@@ -21,7 +21,7 @@ CORS(app, resources={
     r"/api/*": {
         "origins": [
             "https://apmf-monitoring.vercel.app",
-            jls_extract_var,
+            "http://localhost:3000",
             "http://127.0.0.1:3000"
         ],
         "supports_credentials": True,
