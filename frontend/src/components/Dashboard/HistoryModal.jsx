@@ -73,7 +73,7 @@ export default function HistoryModal({ server, onClose }) {
         const sortedData = allData.reverse();
         setMetrics(sortedData);
         console.log(
-          `📦 Chargé TOUTES les données: ${sortedData.length} mesures`
+          `Chargé TOUTES les données: ${sortedData.length} mesures`
         );
       } else {
         // Sinon, utiliser la route normale avec limite
@@ -82,7 +82,7 @@ export default function HistoryModal({ server, onClose }) {
         const data = response.data.data || [];
         const sortedData = data.reverse();
         setMetrics(sortedData);
-        console.log(`📊 Chargé ${sortedData.length} mesures pour ${period}`);
+        console.log(`Chargé ${sortedData.length} mesures pour ${period}`);
       }
     } catch (error) {
       console.error("Erreur historique modal:", error);

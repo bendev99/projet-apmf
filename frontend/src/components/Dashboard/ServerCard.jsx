@@ -1,13 +1,10 @@
 import {
-  FiServer,
   FiTrash2,
   FiPower,
   FiActivity,
   FiBarChart2,
   FiEdit2,
 } from "react-icons/fi";
-import { formatDistanceToNow } from "date-fns";
-import { fr } from "date-fns/locale";
 
 export default function ServerCard({
   server,

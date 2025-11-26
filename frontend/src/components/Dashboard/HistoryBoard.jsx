@@ -78,7 +78,7 @@ export default function HistoryBoard({ servers }) {
       setLastUpdate(new Date());
 
       console.log(
-        `✅ [${format(new Date(), "HH:mm:ss")}] Affichage des ${
+        `[${format(new Date(), "HH:mm:ss")}] Affichage des ${
           last10Measures.length
         } dernières mesures`
       );
@@ -270,7 +270,7 @@ export default function HistoryBoard({ servers }) {
             <div className="lg:col-span-2 bg-gray-50 rounded-lg p-4">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-sm font-semibold text-gray-700">
-                  Évolution CPU & RAM ({period})
+                  Évolution CPU & RAM
                 </h4>
                 <span className="text-xs text-gray-500">
                   {history.length} mesures • EAT (UTC+3)

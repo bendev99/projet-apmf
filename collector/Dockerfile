@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Créer dossier SSH sécurisé
+RUN mkdir -p /root/.ssh && rm -rf /root/.ssh/apmf_key
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
