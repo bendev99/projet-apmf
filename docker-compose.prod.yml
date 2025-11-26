@@ -1,0 +1,38 @@
+services:
+  backend:
+    build: ./backend
+    container_name: apmf-backend
+    restart: always
+    env_file: ./backend/.env
+    expose:
+      - "5000"
+    networks:
+      - apmf-net
+
+  collector:
+    build: ./collector
+    container_name: apmf-collector
+    restart: always
+    env_file: ./collector/.env
+    depends_on:
+      - backend
+    volumes:
+      - ./ssh_keys:/root/.ssh:ro # Clé SSH en lecture seule
+    networks:
+      - apmf-net
+
+  frontend:
+    build: ./frontend
+    container_name: apmf-frontend
+    restart: always
+    env_file: ./frontend/.env
+    ports:
+      - "80:80" # expose le dashboard sur le port 80 du serveur
+    depends_on:
+      - backend
+    networks:
+      - apmf-net
+
+networks:
+  apmf-net:
+    driver: bridge

@@ -7,7 +7,6 @@ projet-apmf
 │   ├── config.py
 │   ├── db.py
 │   ├── Dockerfile
-│   ├── Dockerfile.prod
 │   ├── entrypoint.sh
 │   ├── fix_admin.py
 │   ├── models
@@ -43,16 +42,10 @@ projet-apmf
 │   │   │   ├── targets.cpython-311.pyc
 │   │   │   └── targets.cpython-313.pyc
 │   │   └── targets.py
-│   ├── services
-│   │   ├── **init**.py
-│   │   ├── **pycache**
-│   │   │   ├── **init**.cpython-311.pyc
-│   │   │   └── ssh_installer.cpython-311.pyc
-│   │   └── ssh_installer.py
-│   ├── ssh_keys
-│   │   ├── apmf_key
-│   │   └── apmf_key.pub
-│   ├── ssh_remote_install.sh
+│   └── services
+│      ├── **init**.py
+│      └── **pycache**
+│         └── **init**.cpython-311.pyc
 ├── collector
 │   ├── alert_checker.py
 │   ├── collector.log
@@ -67,9 +60,7 @@ projet-apmf
 │   │   ├── config.cpython-313.pyc
 │   │   ├── metrics_script.cpython-311.pyc
 │   │   └── metrics_script.cpython-313.pyc
-│   ├── requirements.txt
-│   ├── test_ssh.py
-├── docker-compose-prod.yml
+│   └── requirements.txt
 ├── docker-compose.yml
 ├── frontend
 │   ├── Dockerfile
@@ -108,7 +99,4 @@ projet-apmf
 ├── ssh_remote_install.sh
 ├── structure_backend.md
 ├── structure_front.md
-├── structure.md
-└── update_admin_hash.py
-
-668 directories, 2169 files
+└── structure.md

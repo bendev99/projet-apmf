@@ -21,19 +21,22 @@ class Config:
 
     # CORS Origins (liste pour credentials=True)
     ALLOWED_ORIGINS_STR = os.getenv("ALLOWED_ORIGINS")
-    if ALLOWED_ORIGINS_STR:
+    if ALLOWED_ORIGINS_RAW:
         try:
-            ALLOWED_ORIGINS = json.loads(ALLOWED_ORIGINS_STR)
-            # Assure que c'est une liste
+            ALLOWED_ORIGINS = json.loads(ALLOWED_ORIGINS_RAW)
             if not isinstance(ALLOWED_ORIGINS, list):
                 ALLOWED_ORIGINS = [ALLOWED_ORIGINS]
-        except json.JSONDecodeError:
-            print("ALLOWED_ORIGINS invalide dans .env ; utilisation default")
-            ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+        except Exception:
+            ALLOWED_ORIGINS = ["https://apmf-monitoring.vercel.app"]
     else:
-        ALLOWED_ORIGINS = ["http://localhost:3000", "http://127.0.0.1:3000"]
+        # Valeurs par défaut (local + prod)
+        ALLOWED_ORIGINS = [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "https://apmf-monitoring.vercel.app"
+        ]
 
     # Admin par défaut
     DEFAULT_ADMIN_USERNAME = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
     DEFAULT_ADMIN_PASSWORD = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
-    DEFAULT_ADMIN_EMAIL = os.getenv("DEFAULT_ADMIN_EMAIL", "admin@example.com")
+    DEFAULT_ADMIN_EMAIL = os.getenv("DEFAULT_ADMIN_EMAIL", "benbenedictin@gmail.com.com")
