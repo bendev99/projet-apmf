@@ -27,13 +27,13 @@ class Config:
             if not isinstance(ALLOWED_ORIGINS, list):
                 ALLOWED_ORIGINS = [ALLOWED_ORIGINS]
         except Exception:
-            ALLOWED_ORIGINS = ["https://apmf-monitoring.vercel.app"]
+            ALLOWED_ORIGINS = ["https://apmfmonitoring.vercel.app"]
     else:
         # Valeurs par défaut (local + prod)
         ALLOWED_ORIGINS = [
             "http://localhost:3000",
             "http://127.0.0.1:3000",
-            "https://apmf-monitoring.vercel.app"
+            "https://apmfmonitoring.vercel.app"
         ]
 
     # Admin par défaut

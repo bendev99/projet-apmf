@@ -18,8 +18,8 @@ class Config:
     SSH_KEY_PATH = os.path.expanduser(os.getenv("SSH_KEY_PATH", "~/.ssh/apmf_key"))
 
     # Polling
-    POLL_INTERVAL = int(os.getenv("POLL_INTERVAL_SECONDS", "10"))
-    MAX_WORKERS = int(os.getenv("POLL_MAX_WORKERS", "8"))
+    POLL_INTERVAL = int(os.getenv("POLL_INTERVAL_SECONDS", "5"))
+    MAX_WORKERS = int(os.getenv("POLL_MAX_WORKERS", "5"))
 
     # Logging
     LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")

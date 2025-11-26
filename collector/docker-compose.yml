@@ -1,0 +1,11 @@
+services:
+  collector:
+    build: .
+    container_name: projet-apmf-collector
+    restart: always
+    environment:
+      BACKEND_URL: ${BACKEND_URL}
+      MONGODB_URI: ${MONGODB_URI}
+      POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-5}
+    volumes:
+      - ./ssh_keys:/root/.ssh:ro

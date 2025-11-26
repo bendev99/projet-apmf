@@ -20,7 +20,7 @@ app.config.from_object(Config)
 CORS(app, resources={
     r"/api/*": {
         "origins": [
-            "https://apmf-monitoring.vercel.app",
+            "https://apmfmonitoring.vercel.app",
             "http://localhost:3000",
             "http://127.0.0.1:3000"
         ],
