@@ -6,9 +6,6 @@ backend/*$py.class
 backend/*.so
 backend/.Python
 backend/venv/
-backend/env/
-backend/ENV/
-
 backend/.env
 backend/.env.local
 backend/.env.production
@@ -21,9 +18,6 @@ collector/*$py.class
 collector/*.so
 collector/.Python
 collector/venv/
-collector/env/
-collector/ENV/
-
 collector/.env
 collector/.env.local
 collector/.env.production
@@ -39,6 +33,11 @@ frontend/*.log
 backend/.env
 collector/.env
 frontend/.env
+
+.env
+.env.local
+.env.production
+.env.*.local
 
 # IDE
 .vscode/
