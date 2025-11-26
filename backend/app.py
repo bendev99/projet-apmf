@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
-from utils.db import init_db, create_default_admin
+from db import init_db, create_default_admin
 
 # Import des routes
 from routes.auth import auth_bp
@@ -17,7 +17,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Configuration CORS
-origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:5173")
+origins = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000")
 CORS(app, resources={
     r"/api/*": {
         "origins": Config.ALLOWED_ORIGINS,

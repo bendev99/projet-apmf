@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from models.target import Target
-from utils.db import metrics
+from db import metrics
 
 targets_bp = Blueprint('targets', __name__)
 

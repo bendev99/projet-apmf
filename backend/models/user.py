@@ -1,5 +1,5 @@
 import bcrypt
-from utils.db import users
+from db import users
 from datetime import datetime
 
 class User:

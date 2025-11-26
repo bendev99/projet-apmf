@@ -14,7 +14,7 @@ echo "=== Configuration de la supervision APMF ==="
 # ========================================
 install_sshpass() {
     if command -v sshpass >/dev/null 2>&1; then
-        echo "✓ sshpass est déjà installé"
+        echo "sshpass est déjà installé"
         return
     fi
 
@@ -53,7 +53,7 @@ install_sshpass() {
         exit 1
     fi
 
-    echo "✓ sshpass installé avec succès"
+    echo "sshpass installé avec succès"
 }
 
 # ========================================
@@ -64,13 +64,13 @@ install_sshpass
 # ========================================
 #  Étape 1 : Demande d'informations
 # ========================================
-read -rp "Entrez le nom d'utilisateur initial (ex: root, ubuntu, debian2) : " INITIAL_USER
-read -rp "Entrez l'IP ou le nom de domaine du serveur distant : " REMOTE_IP
-read -srp "Entrez le mot de passe pour ${INITIAL_USER}@${REMOTE_IP} : " REMOTE_PASSWORD
+read -rp "» Entrez le nom d'utilisateur du serveur distant : " REMOTE_USER
+read -rp "» Entrez l'adresse IP du serveur distant : " REMOTE_IP
+read -srp "» Entrez le mot de passe pour ${REMOTE_USER}@${REMOTE_IP} : " REMOTE_PASSWORD
 echo ""
 
-if [ -z "$INITIAL_USER" ] || [ -z "$REMOTE_IP" ] || [ -z "$REMOTE_PASSWORD" ]; then
-    echo "✗ Utilisateur, IP ou mot de passe vide. Abandon."
+if [ -z "$REMOTE_USER" ] || [ -z "$REMOTE_IP" ] || [ -z "$REMOTE_PASSWORD" ]; then
+    echo "× Utilisateur, IP ou mot de passe vide. Abandon."
     exit 1
 fi
 
@@ -80,30 +80,34 @@ fi
 mkdir -p "$(dirname "$SSH_KEY_PATH")"
 
 if [ ! -f "$SSH_KEY_PATH" ]; then
-    echo "Génération de la clé SSH pour l'utilisateur de supervision..."
+    echo "» Génération de la clé SSH pour l'utilisateur de supervision..."
     ssh-keygen -t ed25519 -C "apmf-collector" -f "$SSH_KEY_PATH" -N ""
-    echo "✓ Clé générée : $SSH_KEY_PATH"
+    echo "» Clé générée : $SSH_KEY_PATH"
 else
-    echo "✓ Clé déjà existante : $SSH_KEY_PATH"
+    echo "ø Clé déjà existante : $SSH_KEY_PATH"
 fi
 
 chmod 600 "$SSH_KEY_PATH"
 
 if [ ! -f "${SSH_KEY_PATH}.pub" ]; then
-    echo "✗ Clé publique introuvable : ${SSH_KEY_PATH}.pub"
+    echo "ø Clé publique introuvable : ${SSH_KEY_PATH}.pub"
+    echo "» Supprimez la clé privée et relancez : rm -f '$SSH_KEY_PATH'"
     exit 1
 fi
 
-# On encode la clé publique en base64 pour éviter tous les problèmes de quoting
-SSH_PUBKEY_B64=$(base64 -w0 "${SSH_KEY_PATH}.pub")
+# Encoder avec gestion d'erreur
+if ! SSH_PUBKEY_B64=$(base64 -w0 "${SSH_KEY_PATH}.pub" 2>/dev/null); then
+    echo "× Erreur lors de l'encodage de la clé publique"
+    exit 1
+fi
 
 # ========================================
 #  Étape 3 : Configuration sur le serveur distant
 # ========================================
-echo "Configuration du serveur distant ${REMOTE_IP}..."
+echo "» Configuration du serveur distant ${REMOTE_IP}..."
 
 sshpass -p "$REMOTE_PASSWORD" \
-  ssh -o StrictHostKeyChecking=no "${INITIAL_USER}@${REMOTE_IP}" \
+  ssh -o StrictHostKeyChecking=no "${REMOTE_USER}@${REMOTE_IP}" \
   "MONITORING_USER='$MONITORING_USER' SUDO_PASSWORD='$REMOTE_PASSWORD' SSH_PUBKEY_B64='$SSH_PUBKEY_B64' bash -s" <<'EOF'
 set -euo pipefail
 
@@ -125,11 +129,11 @@ fi
 
 # 1. Créer l'utilisateur de monitoring s'il n'existe pas
 if id "$MONITORING_USER" >/dev/null 2>&1; then
-    echo "✓ Utilisateur ${MONITORING_USER} existe déjà"
+    echo "Utilisateur ${MONITORING_USER} existe déjà"
 else
     echo "Création de l'utilisateur ${MONITORING_USER}..."
     run_sudo adduser --disabled-password --gecos "APMF Monitoring User" "$MONITORING_USER"
-    echo "✓ Utilisateur ${MONITORING_USER} créé"
+    echo "Utilisateur ${MONITORING_USER} créé"
 fi
 
 # 2. S'assurer que le home de l'utilisateur existe et a les bons droits
@@ -149,7 +153,7 @@ run_sudo chown "$MONITORING_USER:$MONITORING_USER" "$SSH_DIR"
 run_sudo chmod 700 "$SSH_DIR"
 
 # 4. Décoder la clé publique et l'écrire dans authorized_keys
-echo "Ajout de la clé publique dans authorized_keys..."
+echo "» Ajout de la clé publique dans authorized_keys..."
 
 TMPFILE=$(mktemp)
 echo "$SSH_PUBKEY_B64" | base64 -d > "$TMPFILE"
@@ -190,31 +194,32 @@ else
 fi
 
 # 8. Afficher un petit récap de debug
-echo "=== DEBUG AUTORISATION ==="
+echo " "
+echo "=== VERIFICATION DES AUTORISATION ==="
 run_sudo ls -ld "$USER_HOME" "$SSH_DIR"
 run_sudo ls -l "$SSH_DIR"
 echo "Contenu de authorized_keys :"
 run_sudo head -n 5 "${SSH_DIR}/authorized_keys" || true
 echo "==========================="
 
-echo "✓ Configuration SSH du compte ${MONITORING_USER} terminée"
+echo "» Configuration SSH du compte ${MONITORING_USER} terminée"
 EOF
 
 # ========================================
 #  Étape 4 : Test de connexion
 # ========================================
-echo "Test de la connexion SSH avec la clé..."
+echo "» Test de la connexion SSH avec la clé..."
 
 if ssh -i "$SSH_KEY_PATH" \
        -o IdentitiesOnly=yes \
        -o StrictHostKeyChecking=no \
        "${MONITORING_USER}@${REMOTE_IP}" \
-       "echo 'Connexion OK'; whoami; hostname; uptime"; then
-    echo "✓ Configuration réussie pour ${MONITORING_USER}@${REMOTE_IP} !"
+       "echo '» Connexion OK'; whoami; hostname; uptime"; then
+    echo "» Configuration réussie pour ${MONITORING_USER}@${REMOTE_IP} !"
 else
-    echo "✗ Erreur lors de la connexion à ${MONITORING_USER}@${REMOTE_IP}"
-    echo "Astuce: lance aussi cette commande pour voir les détails côté client:"
-    echo "  ssh -vvv -i \"$SSH_KEY_PATH\" -o IdentitiesOnly=yes ${MONITORING_USER}@${REMOTE_IP}"
+    echo "× Erreur lors de la connexion à ${MONITORING_USER}@${REMOTE_IP}"
+    echo "ø Astuce: lance aussi cette commande pour voir les détails côté client:"
+    echo "» ssh -vvv -i \"$SSH_KEY_PATH\" -o IdentitiesOnly=yes ${MONITORING_USER}@${REMOTE_IP}"
     exit 1
 fi
 

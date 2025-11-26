@@ -6,7 +6,7 @@ def check_alerts(server_id, metrics, alert_rules):
     """Vérifier si les métriques dépassent les seuils et créer des alertes"""
 
     if not alert_rules or not alert_rules.get('enabled'):
-        print(f"⚠️ Règles d'alerte désactivées pour {server_id}")
+        print(f"Règles d'alerte désactivées pour {server_id}")
         return
 
     alerts = []
@@ -21,7 +21,7 @@ def check_alerts(server_id, metrics, alert_rules):
             'value': cpu_usage,
             'threshold': cpu_threshold
         })
-        print(f"🔥 ALERTE CPU: {cpu_usage:.1f}% > {cpu_threshold}%")
+        print(f"ALERTE CPU: {cpu_usage:.1f}% > {cpu_threshold}%")
 
     # Vérifier RAM
     memory_usage = metrics.get('memory_usage', 0)
@@ -33,7 +33,7 @@ def check_alerts(server_id, metrics, alert_rules):
             'value': memory_usage,
             'threshold': memory_threshold
         })
-        print(f"💾 ALERTE RAM: {memory_usage:.1f}% > {memory_threshold}%")
+        print(f"ALERTE RAM: {memory_usage:.1f}% > {memory_threshold}%")
 
     # Vérifier Disque
     disk_usage = metrics.get('disk_usage', 0)
@@ -45,7 +45,7 @@ def check_alerts(server_id, metrics, alert_rules):
             'value': disk_usage,
             'threshold': disk_threshold
         })
-        print(f"💿 ALERTE DISQUE: {disk_usage:.1f}% > {disk_threshold}%")
+        print(f"ALERTE DISQUE: {disk_usage:.1f}% > {disk_threshold}%")
 
     # Vérifier Température (si disponible)
     temp = metrics.get('cpu_temperature')
@@ -58,15 +58,15 @@ def check_alerts(server_id, metrics, alert_rules):
                 'value': temp,
                 'threshold': temp_threshold
             })
-            print(f"🌡️ ALERTE TEMPÉRATURE: {temp:.1f}°C > {temp_threshold}°C")
+            print(f"ALERTE TEMPÉRATURE: {temp:.1f}°C > {temp_threshold}°C")
 
     # Envoyer les alertes au backend
     if alerts:
-        print(f"🔔 {len(alerts)} alerte(s) détectée(s) pour {server_id}")
+        print(f"{len(alerts)} alerte(s) détectée(s) pour {server_id}")
         for alert in alerts:
             send_alert(server_id, alert)
     else:
-        print(f"✅ Aucune alerte pour {server_id}")
+        print(f"Aucune alerte pour {server_id}")
 
 
 def send_alert(server_id, alert_data):
@@ -90,12 +90,12 @@ def send_alert(server_id, alert_data):
         )
 
         if response.status_code in [200, 201]:
-            print(f"✅ Alerte {alert_data['type']} envoyée au backend")
+            print(f"Alerte {alert_data['type']} envoyée au backend")
         else:
-            print(f"⚠️ Erreur envoi alerte: {response.status_code}")
+            print(f"Erreur envoi alerte: {response.status_code}")
 
     except Exception as e:
-        print(f"❌ Erreur envoi alerte: {e}")
+        print(f"Erreur envoi alerte: {e}")
 
 
 def get_severity(value, threshold):
@@ -122,11 +122,11 @@ def get_alert_rules(server_id):
 
         if response.status_code == 200:
             rules = response.json()
-            print(f"📋 Règles d'alerte pour {server_id}: CPU>{rules.get('cpu_threshold')}%, RAM>{rules.get('memory_threshold')}%, Disque>{rules.get('disk_threshold')}%, Temp>{rules.get('temperature_threshold')}°C")
+            print(f"Règles d'alerte pour {server_id}: CPU>{rules.get('cpu_threshold')}%, RAM>{rules.get('memory_threshold')}%, Disque>{rules.get('disk_threshold')}%, Temp>{rules.get('temperature_threshold')}°C")
             return rules
         else:
-            print(f"⚠️ Impossible de récupérer les règles pour {server_id}")
+            print(f"Impossible de récupérer les règles pour {server_id}")
             return None
     except Exception as e:
-        print(f"❌ Erreur récupération règles: {e}")
+        print(f"Erreur récupération règles: {e}")
         return None

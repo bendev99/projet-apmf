@@ -1,4 +1,4 @@
-from utils.db import targets
+from db import targets
 from datetime import datetime
 
 class Target:

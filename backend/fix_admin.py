@@ -1,4 +1,4 @@
-from utils.db import users
+from db import users
 from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from datetime import datetime

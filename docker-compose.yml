@@ -30,15 +30,6 @@ services:
       - ./collector:/app
     networks:
       - apmf-net
-    # Healthcheck simple (ajuste le port si tu as un endpoint health)
-    healthcheck:
-      test: [
-          "CMD-SHELL",
-          'python -c ''import requests; requests.get("http://localhost:8080/health", timeout=5)'' || exit 1',
-        ] # Optionnel, retire si pas d'endpoint
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   frontend:
     build: ./frontend
@@ -49,7 +40,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./frontend:/app # Hot-reload (change Dockerfile CMD pour npm start en dev)
+      - ./frontend:/app
     environment:
       - VITE_API_URL=http://localhost:5000
     networks:

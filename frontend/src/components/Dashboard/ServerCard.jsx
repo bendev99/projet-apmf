@@ -208,17 +208,6 @@ export default function ServerCard({
               </div>
             </div>
           )}
-
-          {/* Last Update */}
-          <div className="pt-2 border-t border-gray-200">
-            <p className="text-xs text-gray-500">
-              Mise à jour il y a{" "}
-              {formatDistanceToNow(new Date(metric.timestamp), {
-                addSuffix: false,
-                locale: fr,
-              })}
-            </p>
-          </div>
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">

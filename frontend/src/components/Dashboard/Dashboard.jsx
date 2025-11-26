@@ -101,6 +101,7 @@ export default function Dashboard() {
       fetchServersAndMetrics();
     } catch (error) {
       toast.error(error.response?.data?.error || "Erreur lors de l'ajout");
+      throw error; // Afficher l'erreur dans modale
     }
   };
 
