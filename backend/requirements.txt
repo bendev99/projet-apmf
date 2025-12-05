@@ -8,3 +8,4 @@ email-validator==2.1.0
 pytz==2024.1
 gunicorn
 load_dotenv
+sib_api_v3_sdk

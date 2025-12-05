@@ -43,3 +43,7 @@ class Config:
     SMTP_TLS = os.getenv("SMTP_TLS")
     SMTP_USER = os.getenv("SMTP_USER")
     SMTP_PASS = os.getenv("SMTP_PASS")
+
+    # Brevo Config
+    BREVO_API_KEY = os.getenv("BREVO_API_KEY")
+    EMAIL_FROM = os.getenv("EMAIL_FROM")

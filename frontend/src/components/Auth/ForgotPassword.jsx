@@ -22,7 +22,7 @@ export default function ForgotPassword() {
   useEffect(() => {
     if (emailParam) {
       setEmail(emailParam);
-      setStage("code"); // On passe directement à la vérification du code
+      setStage("code");
     }
   }, [emailParam]);
 
