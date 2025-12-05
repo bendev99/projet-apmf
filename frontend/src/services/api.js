@@ -48,14 +48,26 @@ api.interceptors.response.use(
   }
 );
 
-// Auth
+// Authentification
 export const login = (credentials) => api.post("/api/auth/login", credentials);
 
 export const register = (data) => api.post("/api/auth/register", data);
 
 export const getCurrentUser = () => api.get("/api/auth/me");
 
-// Servers/Targets
+export const hasUsers = () => api.get("/api/auth/has-users");
+
+// Réinitialisation mot de passe
+export const requestReset = (email) =>
+  api.post("/api/auth/request-reset", { email });
+
+export const verifyResetCode = (email, code) =>
+  api.post("/api/auth/verify-reset-code", { email, code });
+
+export const resetPassword = (email, password) =>
+  api.post("/api/auth/reset-password", { email, password });
+
+// Serveurs
 export const getServers = () => api.get("/api/targets");
 
 export const addServer = (serverData) => api.post("/api/targets", serverData);

@@ -32,11 +32,14 @@ class Config:
         # Valeurs par défaut (local + prod)
         ALLOWED_ORIGINS = [
             "http://localhost:3000",
+            "http://localhost:5000",
             "http://127.0.0.1:3000",
             "https://apmfmonitoring.vercel.app"
         ]
 
-    # Admin par défaut
-    DEFAULT_ADMIN_USERNAME = os.getenv("DEFAULT_ADMIN_USERNAME", "admin")
-    DEFAULT_ADMIN_PASSWORD = os.getenv("DEFAULT_ADMIN_PASSWORD", "admin123")
-    DEFAULT_ADMIN_EMAIL = os.getenv("DEFAULT_ADMIN_EMAIL", "benbenedictin@gmail.com.com")
+    # SMTP pour envoi d'emails
+    SMTP_SERVER = os.getenv("SMTP_SERVER")
+    SMTP_PORT = os.getenv("SMTP_PORT")
+    SMTP_TLS = os.getenv("SMTP_TLS")
+    SMTP_USER = os.getenv("SMTP_USER")
+    SMTP_PASS = os.getenv("SMTP_PASS")

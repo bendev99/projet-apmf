@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
         setUser({ ...userData, token });
       } catch (error) {
-        console.error("❌ Erreur parsing user data:", error);
+        console.error("Erreur parsing user data:", error);
         // Nettoyer les données corrompues
         localStorage.removeItem("user");
         localStorage.removeItem("token");
@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error("useAuth must be used within AuthProvider");
+    throw new Error("useAuth doit être utilisé dans AuthProvider");
   }
   return context;
 };

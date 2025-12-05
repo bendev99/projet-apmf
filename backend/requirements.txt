@@ -7,3 +7,4 @@ bcrypt==4.1.3
 email-validator==2.1.0
 pytz==2024.1
 gunicorn
+load_dotenv

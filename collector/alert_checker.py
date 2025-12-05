@@ -70,19 +70,20 @@ def check_alerts(server_id, metrics, alert_rules):
 
 
 def send_alert(server_id, alert_data):
-    """Envoyer une alerte au backend"""
-    try:
-        alert_payload = {
-            'server_id': server_id,
-            'type': alert_data['type'],
-            'severity': get_severity(alert_data['value'], alert_data['threshold']),
-            'message': alert_data['message'],
-            'value': float(alert_data['value']),
-            'threshold': float(alert_data['threshold']),
-            'status': 'active',
-            'created_at': datetime.utcnow().isoformat()
-        }
+    from datetime import datetime, timezone
 
+    alert_payload = {
+        'server_id': server_id,
+        'type': alert_data['type'],
+        'severity': get_severity(alert_data['value'], alert_data['threshold']),
+        'message': alert_data['message'],
+        'value': float(alert_data['value']),
+        'threshold': float(alert_data['threshold']),
+        'status': 'active',
+        'created_at': datetime.now(timezone.utc)
+    }
+
+    try:
         response = requests.post(
             f"{Config.BACKEND_URL}/api/alerts/create",
             json=alert_payload,
@@ -96,7 +97,6 @@ def send_alert(server_id, alert_data):
 
     except Exception as e:
         print(f"Erreur envoi alerte: {e}")
-
 
 def get_severity(value, threshold):
     """Déterminer la sévérité de l'alerte"""

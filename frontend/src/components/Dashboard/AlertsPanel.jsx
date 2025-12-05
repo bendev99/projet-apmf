@@ -1,3 +1,7 @@
+import { FaTemperatureHigh } from "react-icons/fa";
+import { BsDisc } from "react-icons/bs";
+import { BiMemoryCard } from "react-icons/bi";
+import { ImFire } from "react-icons/im";
 import { useState, useEffect } from "react";
 import {
   FiX,
@@ -76,12 +80,12 @@ export default function AlertsPanel({ isOpen, onClose }) {
 
   const getTypeIcon = (type) => {
     const icons = {
-      cpu: "🔥",
-      memory: "💾",
-      disk: "💿",
-      temperature: "🌡️",
+      cpu: <ImFire />,
+      memory: <BiMemoryCard />,
+      disk: <BsDisc />,
+      temperature: <FaTemperatureHigh />,
     };
-    return icons[type] || "⚠️";
+    return icons[type] || <FiAlertTriangle />;
   };
 
   if (!isOpen) return null;

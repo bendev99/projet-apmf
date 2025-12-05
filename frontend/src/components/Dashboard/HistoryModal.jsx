@@ -72,9 +72,7 @@ export default function HistoryModal({ server, onClose }) {
         const allData = response.data.data || [];
         const sortedData = allData.reverse();
         setMetrics(sortedData);
-        console.log(
-          `Chargé TOUTES les données: ${sortedData.length} mesures`
-        );
+        console.log(`Chargé TOUTES les données: ${sortedData.length} mesures`);
       } else {
         // Sinon, utiliser la route normale avec limite
         const limit = getPeriodLimit(period);
@@ -94,13 +92,12 @@ export default function HistoryModal({ server, onClose }) {
 
   const getPeriodLimit = (p) => {
     const limits = {
-      "1h": 240,
-      "6h": 1440,
-      "12h": 2880,
-      "24h": 5760,
-      "7d": 40320,
+      "1h": 290,
+      "12h": 3500,
+      "24h": 6920,
+      "7d": 48400,
     };
-    return limits[p] || 5760;
+    return limits[p] || 6920;
   };
 
   const getStats = () => {
@@ -484,11 +481,13 @@ export default function HistoryModal({ server, onClose }) {
             <div className="flex items-center space-x-2">
               <FiClock className="text-gray-600" />
               <span className="text-sm font-medium text-gray-700">
-                Période :
+                Période :{" "}
+                {period === "all" && " Toutes les données disponibles"}{" "}
+                {period !== "all" && ` ${period}`}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {["1h", "6h", "12h", "24h", "7d", "all"].map((p) => (
+              {["1h", "12h", "24h", "7d", "all"].map((p) => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
@@ -506,8 +505,7 @@ export default function HistoryModal({ server, onClose }) {
           </div>
           {metrics.length > 0 && (
             <p className="text-xs text-gray-500 mt-2">
-              {metrics.length} mesures • EAT (UTC+3)
-              {period === "all" && " • Toutes les données disponibles"}
+              {metrics.length} mésures • EAT (UTC+3)
             </p>
           )}
         </div>

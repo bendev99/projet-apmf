@@ -231,7 +231,7 @@ export default function ServerCard({
         <div className="flex space-x-2">
           <button
             onClick={onEdit}
-            className="flex-1 flex items-center justify-center space-x-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+            className="flex-1 flex items-center justify-center space-x-1 px-2 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
           >
             <FiEdit2 />
             <span className="text-sm">Modifier</span>
@@ -239,7 +239,7 @@ export default function ServerCard({
 
           <button
             onClick={onToggle}
-            className={`flex-1 flex items-center justify-center space-x-2 px-3 py-2 rounded-lg transition ${
+            className={`flex-1 flex items-center justify-center space-x-1 px-2 py-2 rounded-lg transition ${
               server.enabled
                 ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                 : "bg-green-100 text-green-700 hover:bg-green-200"
@@ -253,7 +253,7 @@ export default function ServerCard({
 
           <button
             onClick={onDelete}
-            className="flex items-center justify-center space-x-2 px-3 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
+            className="flex items-center justify-center space-x-1 px-2 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition"
           >
             <FiTrash2 />
             <span className="text-sm">Supprimer</span>

@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FiUser, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
-import { login as loginAPI } from "../../services/api";
+import { hasUsers, login as loginAPI } from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
 
 const Login = () => {
@@ -10,9 +10,24 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [allowRegister, setAllowRegister] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await hasUsers();
+      const count = res.data.count;
+
+      if (count === 0) {
+        navigate("/register");
+      }
+
+      setAllowRegister(count < 2);
+    };
+    load();
+  }, []);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -31,7 +46,7 @@ const Login = () => {
       login(response.data);
 
       toast.success("Connexion réussie !");
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Erreur de connexion:", error);
       const errorMessage = error.response?.data?.error || "Erreur de connexion";
@@ -43,27 +58,17 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-200 via-blue-400 to-blue-600 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo/Titre */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-            <svg
-              className="w-8 h-8 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-              />
-            </svg>
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4">
+            <img src="/logo.png" alt="Logo APMF" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Server Monitor</h1>
-          <p className="text-gray-600 mt-2">Connectez-vous à votre compte</p>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Supervision des serveurs
+          </h1>
+          <p className="text-gray-700 mt-2">Connectez-vous à votre compte</p>
         </div>
 
         {/* Formulaire */}
@@ -117,11 +122,21 @@ const Login = () => {
               </div>
             </div>
 
+            <div className="flex justify-end mt-1">
+              <button
+                type="button"
+                onClick={() => navigate("/forgot-password")}
+                className="text-sm text-blue-600 hover:text-blue-800 font-medium transition cursor-pointer"
+              >
+                Mot de passe oublié ?
+              </button>
+            </div>
+
             {/* Bouton de soumission */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center justify-center space-x-2"
             >
               {loading ? (
                 <>
@@ -135,9 +150,22 @@ const Login = () => {
           </form>
         </div>
 
-        {/* Footer (optionnel) */}
-        <p className="text-center text-sm text-gray-600 mt-6">
-          © 2025 Server Monitor. Tous droits réservés.
+        {/* Redirection vers connexion */}
+        {allowRegister && (
+          <div className="text-center mt-6">
+            <p className="text-gray-600">Pas encore de compte ?</p>
+            <button
+              onClick={() => navigate("/register")}
+              className="mt-2 text-blue-600 hover:text-blue-800 font-semibold cursor-pointer"
+            >
+              Créer un compte
+            </button>
+          </div>
+        )}
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-700 mt-6">
+          © 2025 APMF Supervision. Tous droits réservés.
         </p>
       </div>
     </div>

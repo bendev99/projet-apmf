@@ -26,7 +26,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - ./ssh_keys:/root/.ssh # Tes clés SSH
+      - ./ssh_keys:/root/.ssh
       - ./collector:/app
     networks:
       - apmf-net

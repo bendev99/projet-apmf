@@ -6,9 +6,12 @@ import {
   clearAllAlerts,
 } from "../../services/api";
 import { FiCheck, FiTrash2, FiClock, FiAlertTriangle } from "react-icons/fi";
-import { formatDistanceToNow } from "date-fns";
-import { fr } from "date-fns/locale";
 import toast from "react-hot-toast";
+import { ImFire } from "react-icons/im";
+import { BiMemoryCard } from "react-icons/bi";
+import { BsDisc } from "react-icons/bs";
+import { FaTemperatureHigh } from "react-icons/fa";
+import { AiOutlineWarning } from "react-icons/ai";
 
 export default function AlertsDropdown({ anchorRef, onClose }) {
   const [alerts, setAlerts] = useState([]);
@@ -86,12 +89,32 @@ export default function AlertsDropdown({ anchorRef, onClose }) {
 
   const getTypeIcon = (type) => {
     const icons = {
-      cpu: "🔥",
-      memory: "💾",
-      disk: "💿",
-      temperature: "🌡️",
+      cpu: <ImFire />,
+      memory: <BiMemoryCard />,
+      disk: <BsDisc />,
+      temperature: <FaTemperatureHigh />,
     };
-    return icons[type] || "⚠️";
+    return icons[type] || <AiOutlineWarning />;
+  };
+
+  const formatToTimezone = (isoDate, offsetHours = 3) => {
+    // Crée la date puis applique un décalage horaire en heures (ex: +3 pour UTC+3)
+    const d = new Date(isoDate);
+    const shifted = new Date(d.getTime() + offsetHours * 60 * 60 * 1000);
+
+    const datePart = shifted.toLocaleDateString("fr-FR", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const timePart = shifted.toLocaleTimeString("fr-FR", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+
+    return `${datePart} - ${timePart}`;
   };
 
   return (
@@ -167,12 +190,7 @@ export default function AlertsDropdown({ anchorRef, onClose }) {
               <div className="flex items-center justify-between text-xs opacity-75 mb-3">
                 <span className="flex items-center space-x-1">
                   <FiClock />
-                  <span>
-                    {formatDistanceToNow(new Date(alert.created_at), {
-                      addSuffix: true,
-                      locale: fr,
-                    })}
-                  </span>
+                  <span>{formatToTimezone(alert.created_at, 3)}</span>
                 </span>
                 <span className="font-medium">
                   Seuil: {alert.threshold}

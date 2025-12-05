@@ -66,30 +66,3 @@ def init_db():
         print("Index MongoDB créés avec succès")
     except Exception as e:
         print(f"Erreur lors de la création des index: {e}")
-
-def create_default_admin():
-    """Créer l'utilisateur admin par défaut s'il n'existe pas"""
-    import bcrypt
-
-    # Vérifier si l'admin existe
-    existing_admin = users_collection.find_one({"username": Config.DEFAULT_ADMIN_USERNAME})
-    if existing_admin:
-        print(f"Admin '{Config.DEFAULT_ADMIN_USERNAME}' déjà existant")
-        return
-
-    # Créer l'admin
-    hashed_password = bcrypt.hashpw(
-        Config.DEFAULT_ADMIN_PASSWORD.encode('utf-8'),
-        bcrypt.gensalt()
-    )
-
-    admin_user = {
-        "username": Config.DEFAULT_ADMIN_USERNAME,
-        "email": Config.DEFAULT_ADMIN_EMAIL,
-        "password": hashed_password.decode('utf-8'),
-        "role": "admin",
-        "created_at": datetime.utcnow().isoformat()
-    }
-
-    users_collection.insert_one(admin_user)
-    print(f"Admin créé: {Config.DEFAULT_ADMIN_USERNAME} / {Config.DEFAULT_ADMIN_PASSWORD}")

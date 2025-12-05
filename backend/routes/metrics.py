@@ -25,7 +25,7 @@ def add_metric():
             "cpu_temperature": data.get('cpu_temperature'),
             "network_rx": data.get('network_rx', 0),
             "network_tx": data.get('network_tx', 0),
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow()
         }
 
         result = metrics.insert_one(metric)

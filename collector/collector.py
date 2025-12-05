@@ -1,6 +1,7 @@
 import os
 import time
 import json
+import pytz
 import logging
 import requests
 import paramiko
@@ -109,7 +110,7 @@ def log_error(server_id, ip, error_message):
             'server_id': server_id,
             'ip': ip,
             'error': error_message,
-            'timestamp': datetime.utcnow().isoformat()
+            'timestamp': datetime.utcnow()
         }
         errors_collection.insert_one(error_doc)
     except Exception as e:

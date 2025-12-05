@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
-from db import init_db, create_default_admin
+from db import init_db
 
 # Import des routes
 from routes.auth import auth_bp
@@ -17,18 +17,11 @@ app = Flask(__name__)
 app.config.from_object(Config)
 
 # Configuration CORS
-CORS(app, resources={
-    r"/api/*": {
-        "origins": [
-            "https://apmfmonitoring.vercel.app",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000"
-        ],
-        "supports_credentials": True,
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-    }
-})
+ALLOWED_ORIGINS = [
+    "https://apmfmonitoring.vercel.app",
+    "http://localhost:3000"
+]
+CORS(app, supports_credentials=True, origins=ALLOWED_ORIGINS)
 
 # Configuration JWT
 jwt = JWTManager(app)
@@ -83,7 +76,6 @@ if __name__ == '__main__':
     # Initialiser la base de données
     print("Initialisation de la base de données...")
     init_db()
-    create_default_admin()
 
     print(f"Démarrage du serveur sur le port {Config.PORT}...")
     app.run(host='0.0.0.0', port=Config.PORT, debug=True)
