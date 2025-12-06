@@ -20,6 +20,7 @@ import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { formatToTimezone } from "../../utils/dateUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -328,9 +329,7 @@ export default function HistoryModal({ server, onClose }) {
 
   // Données pour le graphique RAM
   const ramChartData = {
-    labels: metrics.map((m) =>
-      format(convertToLocalTime(m.timestamp), "HH:mm", { locale: fr })
-    ),
+    labels: data.map((item) => formatToTimezone(item.timestamp)),
     datasets: [
       {
         label: "RAM %",

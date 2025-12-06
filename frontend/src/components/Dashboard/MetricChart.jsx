@@ -10,8 +10,7 @@ import {
   Legend,
   Filler,
 } from "chart.js";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { formatToTimezone } from "../../utils/dateUtils";
 
 ChartJS.register(
   CategoryScale,
@@ -26,9 +25,7 @@ ChartJS.register(
 
 export default function MetricChart({ data, metric, color }) {
   const chartData = {
-    labels: data.map((item) =>
-      format(new Date(item.timestamp), "HH:mm", { locale: fr })
-    ),
+    labels: data.map((item) => formatToTimezone(item.timestamp)),
     datasets: [
       {
         label: getMetricLabel(metric),
