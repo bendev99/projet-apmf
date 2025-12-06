@@ -97,7 +97,7 @@ export default function AlertsDropdown({ anchorRef, onClose }) {
     return icons[type] || <AiOutlineWarning />;
   };
 
-  const formatToTimezone = (isoDate, offsetHours = 3) => {
+  const formatToTimezone = (isoDate, offsetHours = 0) => {
     // Crée la date puis applique un décalage horaire en heures (ex: +3 pour UTC+3)
     const d = new Date(isoDate);
     const shifted = new Date(d.getTime() + offsetHours * 60 * 60 * 1000);
@@ -190,7 +190,7 @@ export default function AlertsDropdown({ anchorRef, onClose }) {
               <div className="flex items-center justify-between text-xs opacity-75 mb-3">
                 <span className="flex items-center space-x-1">
                   <FiClock />
-                  <span>{formatToTimezone(alert.created_at, 3)}</span>
+                  <span>{formatToTimezone(alert.created_at)}</span>
                 </span>
                 <span className="font-medium">
                   Seuil: {alert.threshold}
